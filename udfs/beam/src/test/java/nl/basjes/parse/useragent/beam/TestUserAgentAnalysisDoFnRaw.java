@@ -58,6 +58,11 @@ public class TestUserAgentAnalysisDoFnRaw implements Serializable {
         public void setAgentNameVersion(TestRecord record, String value) {
             record.agentNameVersion = value;
         }
+
+        @YauaaField("AgentNameVersionMajor")
+        public void setAgentNameVersionMajor(TestRecord record, String value) {
+            record.agentNameVersionMajor = value;
+        }
     }
 
     @Test
@@ -69,8 +74,9 @@ public class TestUserAgentAnalysisDoFnRaw implements Serializable {
         TestRecord testInput = new TestRecord(userAgent);
 
         TestRecord expectedOutput = new TestRecord(userAgent);
-        expectedOutput.agentNameVersion = "Chrome 48.0.2564.82";
         expectedOutput.deviceClass = "Desktop";
+        expectedOutput.agentNameVersion = "Chrome 48.0.2564.82";
+        expectedOutput.agentNameVersionMajor = "Chrome 48";
 
         PCollection<TestRecord> input = pipeline
             .apply("Create", Create.of(testInput));

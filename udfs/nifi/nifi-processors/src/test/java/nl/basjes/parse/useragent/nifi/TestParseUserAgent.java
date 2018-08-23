@@ -23,14 +23,13 @@ import org.apache.nifi.util.TestRunners;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static nl.basjes.parse.useragent.nifi.ParseUserAgent.PROPERTY_PREFIX;
 import static nl.basjes.parse.useragent.nifi.ParseUserAgent.ATTRIBUTE_PREFIX;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 // CHECKSTYLE.OFF: ParenPad
 public class TestParseUserAgent {
@@ -46,7 +45,7 @@ public class TestParseUserAgent {
     }
 
     @Test
-    public void testParserFull() throws IOException {
+    public void testParserFull() {
         // Content to be mock a json file
         String content = "CONTENT:>>" + TEST_USER_AGENT + "<<";
 
@@ -105,7 +104,7 @@ public class TestParseUserAgent {
 
         // If you need to read or do additional tests on results you can access the content
         List<MockFlowFile> results = runner.getFlowFilesForRelationship(ParseUserAgent.SUCCESS);
-        assertTrue("1 match", results.size() == 1);
+        assertEquals("1 match", 1, results.size());
         MockFlowFile result = results.get(0);
         result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceClass",                      "Desktop"             );
         result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceName",                       "Linux Desktop"       );
@@ -153,7 +152,7 @@ public class TestParseUserAgent {
 
 
     @Test
-    public void testParserPartial() throws IOException {
+    public void testParserPartial() {
         // Content to be mock a json file
         String content = "CONTENT:>>" + TEST_USER_AGENT + "<<";
 
@@ -179,7 +178,7 @@ public class TestParseUserAgent {
 
         // If you need to read or do additional tests on results you can access the content
         List<MockFlowFile> results = runner.getFlowFilesForRelationship(ParseUserAgent.SUCCESS);
-        assertTrue("1 match", results.size() == 1);
+        assertEquals("1 match", 1, results.size());
         MockFlowFile result = results.get(0);
         result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceClass",            "Desktop"      );
         result.assertAttributeEquals(ATTRIBUTE_PREFIX + "OperatingSystemName",    "Linux"        );
@@ -226,9 +225,117 @@ public class TestParseUserAgent {
         result.assertContentEquals(content);
     }
 
+    @Test
+    public void testParserFullPII() {
+        // Content to be mock a json file
+        String content = "CONTENT:>>" + TEST_USER_AGENT + "<<";
+
+        runner.setProperty("DropPII", "true");
+
+        // Add properties
+        runner.setProperty(PROPERTY_PREFIX + "DeviceClass",                      "true");
+        runner.setProperty(PROPERTY_PREFIX + "DeviceName",                       "true");
+        runner.setProperty(PROPERTY_PREFIX + "OperatingSystemClass",             "true");
+        runner.setProperty(PROPERTY_PREFIX + "OperatingSystemName",              "true");
+        runner.setProperty(PROPERTY_PREFIX + "OperatingSystemVersion",           "true");
+        runner.setProperty(PROPERTY_PREFIX + "LayoutEngineClass",                "true");
+        runner.setProperty(PROPERTY_PREFIX + "LayoutEngineName",                 "true");
+        runner.setProperty(PROPERTY_PREFIX + "LayoutEngineVersion",              "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentClass",                       "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentName",                        "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentVersion",                     "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentVersionMajor",                "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentNameVersion",                 "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentNameVersionMajor",            "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentBuild",                       "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentInformationEmail",            "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentInformationUrl",              "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentLanguage",                    "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentSecurity",                    "true");
+        runner.setProperty(PROPERTY_PREFIX + "AgentUuid",                        "true");
+        runner.setProperty(PROPERTY_PREFIX + "Anonymized",                       "true");
+        runner.setProperty(PROPERTY_PREFIX + "DeviceBrand",                      "true");
+        runner.setProperty(PROPERTY_PREFIX + "DeviceCpu",                        "true");
+        runner.setProperty(PROPERTY_PREFIX + "DeviceFirmwareVersion",            "true");
+        runner.setProperty(PROPERTY_PREFIX + "DeviceVersion",                    "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookCarrier",                  "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookDeviceClass",              "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookDeviceName",               "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookDeviceVersion",            "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookFBOP",                     "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookFBSS",                     "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookOperatingSystemName",      "true");
+        runner.setProperty(PROPERTY_PREFIX + "FacebookOperatingSystemVersion",   "true");
+        runner.setProperty(PROPERTY_PREFIX + "HackerAttackVector",               "true");
+        runner.setProperty(PROPERTY_PREFIX + "HackerToolkit",                    "true");
+        runner.setProperty(PROPERTY_PREFIX + "KoboAffiliate",                    "true");
+        runner.setProperty(PROPERTY_PREFIX + "KoboPlatformId",                   "true");
+        runner.setProperty(PROPERTY_PREFIX + "LayoutEngineBuild",                "true");
+        runner.setProperty(PROPERTY_PREFIX + "OperatingSystemVersionBuild",      "true");
+
+        // Add the content to the runner (just because we 'should' have some content).
+        MockFlowFile flowfile = runner.enqueue(content);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put(ParseUserAgent.USERAGENTSTRING_ATTRIBUTENAME, TEST_USER_AGENT);
+        flowfile.putAttributes(attributes);
+
+        // Run the enqueued content, it also takes an int = number of contents queued
+        runner.run(1);
+
+        // All results were processed with out failure
+        runner.assertQueueEmpty();
+
+        // If you need to read or do additional tests on results you can access the content
+        List<MockFlowFile> results = runner.getFlowFilesForRelationship(ParseUserAgent.SUCCESS);
+        assertEquals("1 match", 1, results.size());
+        MockFlowFile result = results.get(0);
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceClass",                      "Desktop"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceName",                       "Linux Desktop"       );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "OperatingSystemClass",             "Desktop"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "OperatingSystemName",              "Linux"               );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "OperatingSystemVersion",           "Intel x86_64"        );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "OperatingSystemVersionBuild",      null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "LayoutEngineClass",                "Browser"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "LayoutEngineName",                 "Blink"               );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "LayoutEngineVersion",              null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "LayoutEngineBuild",                null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentClass",                       "Browser"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentName",                        "Chrome"              );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentVersion",                     null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentVersionMajor",                "48"                  );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentNameVersion",                 null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentNameVersionMajor",            "Chrome 48"           );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentBuild",                       null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentInformationEmail",            "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentInformationUrl",              "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentLanguage",                    "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentSecurity",                    "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "AgentUuid",                        null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "Anonymized",                       "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceBrand",                      "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceCpu",                        "Intel x86_64"        );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceFirmwareVersion",            null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "DeviceVersion",                    "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookCarrier",                  "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookDeviceClass",              "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookDeviceName",               "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookDeviceVersion",            "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookFBOP",                     null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookFBSS",                     null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookOperatingSystemName",      "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "FacebookOperatingSystemVersion",   "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "HackerAttackVector",               "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "HackerToolkit",                    "Unknown"             );
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "KoboAffiliate",                    null ); // Wiped because not PII safe.
+        result.assertAttributeEquals(ATTRIBUTE_PREFIX + "KoboPlatformId",                   null ); // Wiped because not PII safe.
+
+        // Test attributes and content
+        result.assertContentEquals(content);
+    }
+
 
     @Test
-    public void testParserMissingInput() throws IOException {
+    public void testParserMissingInput() {
         // Content to be mock a json file
         String content = "CONTENT:>>" + TEST_USER_AGENT + "<<";
         // Add properties
@@ -254,10 +361,10 @@ public class TestParseUserAgent {
         runner.assertQueueEmpty();
 
         List<MockFlowFile> results = runner.getFlowFilesForRelationship(ParseUserAgent.SUCCESS);
-        assertTrue("None at success", results.size() == 0);
+        assertEquals("None at success", 0, results.size());
 
         results = runner.getFlowFilesForRelationship(ParseUserAgent.MISSING);
-        assertTrue("1 match", results.size() == 1);
+        assertEquals("1 match", 1, results.size());
         MockFlowFile result = results.get(0);
         result.assertAttributeNotExists(ATTRIBUTE_PREFIX + "DeviceClass"                    );
         result.assertAttributeNotExists(ATTRIBUTE_PREFIX + "OperatingSystemName"            );

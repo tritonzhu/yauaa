@@ -99,6 +99,11 @@ public class UserAgentAnnotationAnalyzer<T> {
         }
 
         UserAgentAnalyzerBuilder<?, ?> builder = UserAgentAnalyzer.newBuilder();
+
+        if (theMapper.dropPIIFields()) {
+            builder.dropPIIFields();
+        }
+
         builder.hideMatcherLoadStats();
         if (!fieldSetters.isEmpty()) {
             builder.withFields(fieldSetters.keySet());

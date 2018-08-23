@@ -7,6 +7,7 @@
 
 ###Using Yauaa
 * [Basic usage](README-Usage.md)  
+* [Is the Useragent PII ?](PIIFields.md)
 * [Limitations of the engine](README-Limitations.md)  
 * [Memory usage](README-MemoryUsage.md)  
 * [Performance](README-Performance.md) 

@@ -96,6 +96,8 @@ public class ParseUserAgent extends GenericUDF {
         }
         useragentOI = (StringObjectInspector) inputOI;
 
+        // TODO: Implement optional extra argument to DropPII fields.
+
         // ================================
         // Initialize the parser
         constructAnalyzer();

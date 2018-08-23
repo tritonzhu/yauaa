@@ -23,6 +23,7 @@ public class TestRecord implements Serializable {
     final String useragent;
     String deviceClass;
     String agentNameVersion;
+    String agentNameVersionMajor;
 
     String shouldRemainNull = null;
 
@@ -30,10 +31,15 @@ public class TestRecord implements Serializable {
         this.useragent = useragent;
     }
 
-    public TestRecord(String useragent, String deviceClass, String agentNameVersion, String shouldRemainNull) {
+    public TestRecord(String useragent,
+                      String deviceClass,
+                      String agentNameVersion,
+                      String agentNameVersionMajor,
+                      String shouldRemainNull) {
         this.useragent = useragent;
         this.deviceClass = deviceClass;
         this.agentNameVersion = agentNameVersion;
+        this.agentNameVersionMajor = agentNameVersionMajor;
         this.shouldRemainNull = shouldRemainNull;
     }
 
@@ -43,6 +49,7 @@ public class TestRecord implements Serializable {
             "useragent='" + useragent + '\'' +
             ", deviceClass='" + deviceClass + '\'' +
             ", agentNameVersion='" + agentNameVersion + '\'' +
+            ", agentNameVersionMajor='" + agentNameVersionMajor + '\'' +
             ", shouldRemainNull='" + shouldRemainNull + '\'' +
             '}';
     }
@@ -59,10 +66,11 @@ public class TestRecord implements Serializable {
         TestRecord record = (TestRecord) o;
 
         return
-            isSame(useragent,        record.useragent)         &&
-            isSame(deviceClass,      record.deviceClass)       &&
-            isSame(agentNameVersion, record.agentNameVersion)  &&
-            isSame(shouldRemainNull, record.shouldRemainNull);
+            isSame(useragent,             record.useragent)         &&
+            isSame(deviceClass,           record.deviceClass)       &&
+            isSame(agentNameVersion,      record.agentNameVersion)  &&
+            isSame(agentNameVersionMajor, record.agentNameVersionMajor)  &&
+            isSame(shouldRemainNull,      record.shouldRemainNull);
     }
 
     private boolean isSame(String a, String b){
@@ -75,9 +83,10 @@ public class TestRecord implements Serializable {
     @Override
     public int hashCode() {
         int result = useragent.hashCode();
-        result = 31 * result + (deviceClass      != null ? deviceClass.hashCode()      : 0);
-        result = 31 * result + (agentNameVersion != null ? agentNameVersion.hashCode() : 0);
-        result = 31 * result + (shouldRemainNull != null ? shouldRemainNull.hashCode() : 0);
+        result = 31 * result + (deviceClass             != null ? deviceClass.hashCode()            : 0);
+        result = 31 * result + (agentNameVersion        != null ? agentNameVersion.hashCode()       : 0);
+        result = 31 * result + (agentNameVersionMajor   != null ? agentNameVersionMajor.hashCode()  : 0);
+        result = 31 * result + (shouldRemainNull        != null ? shouldRemainNull.hashCode()       : 0);
         return result;
     }
 }

@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static nl.basjes.parse.useragent.pii.PIIFieldList.isPIISafeField;
+
 public class UserAgent extends UserAgentBaseListener implements Serializable, ANTLRErrorListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserAgent.class);
@@ -59,7 +61,8 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
     public static final String AGENT_VERSION_MAJOR = "AgentVersionMajor";
 
     public static final String SYNTAX_ERROR = "__SyntaxError__";
-    public static final String USERAGENT = "Useragent";
+    public static final String USERAGENT    = "Useragent";
+    public static final String DROP_PII     = "DropPII";
 
     public static final String SET_ALL_FIELDS = "__Set_ALL_Fields__";
     public static final String NULL_VALUE = "<<<null>>>";
@@ -150,7 +153,6 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
             int stopIndex,
             int prediction,
             ATNConfigSet configs) {
-
     }
 
     // The original input value
@@ -181,7 +183,6 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
 
     @Override
     public int hashCode() {
-
         return Objects.hash(userAgentString, allFields);
     }
 
@@ -286,6 +287,7 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
     }
 
     public void clone(UserAgent userAgent) {
+        debug = userAgent.debug;
         init();
         debug=userAgent.debug;
 
@@ -341,10 +343,19 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
         }
     }
 
+    public void wipePIIFields() {
+        for (Map.Entry<String, AgentField> fieldEntry : allFields.entrySet()) {
+            if (!isPIISafeField(fieldEntry.getKey())) {
+                fieldEntry.getValue().reset();
+            }
+        }
+    }
+
     static boolean isSystemField(String fieldname) {
         return  SET_ALL_FIELDS.equals(fieldname) ||
                 SYNTAX_ERROR.equals(fieldname) ||
-                USERAGENT.equals(fieldname);
+                USERAGENT.equals(fieldname) ||
+                DROP_PII.equals(fieldname);
     }
 
     public void processSetAll() {
@@ -415,25 +426,33 @@ public class UserAgent extends UserAgentBaseListener implements Serializable, AN
     }
 
     public String getValue(String fieldName) {
-        if (USERAGENT.equals(fieldName)) {
-            return userAgentString;
+        switch (fieldName) {
+            case USERAGENT:
+                return userAgentString;
+            case DROP_PII:
+                return UNKNOWN_VALUE;
+            default:
+                AgentField field = allFields.get(fieldName);
+                if (field == null) {
+                    return UNKNOWN_VALUE;
+                }
+                return field.getValue();
         }
-        AgentField field = allFields.get(fieldName);
-        if (field == null) {
-            return UNKNOWN_VALUE;
-        }
-        return field.getValue();
     }
 
     public Long getConfidence(String fieldName) {
-        if (USERAGENT.equals(fieldName)) {
-            return 0L;
+        switch (fieldName) {
+            case USERAGENT:
+                return 0L;
+            case DROP_PII:
+                return -1L;
+            default:
+                AgentField field = allFields.get(fieldName);
+                if (field == null) {
+                    return -1L;
+                }
+                return field.getConfidence();
         }
-        AgentField field = allFields.get(fieldName);
-        if (field == null) {
-            return -1L;
-        }
-        return field.getConfidence();
     }
 
     public String toYamlTestCase() {

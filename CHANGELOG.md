@@ -6,6 +6,7 @@ v5.3
 - Handle the 'too many spaces' effect.
 - Fixed Rat checking
 - Major update of the UDF for logparser
+- Added "DropPII" flag to kick fields that may be a PII problem.
 
 v5.2
 ===

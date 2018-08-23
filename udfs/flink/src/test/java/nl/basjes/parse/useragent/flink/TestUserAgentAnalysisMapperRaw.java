@@ -39,6 +39,11 @@ public class TestUserAgentAnalysisMapperRaw {
         public void setAgentNameVersion(TestRecord record, String value) {
             record.agentNameVersion = value;
         }
+
+        @YauaaField("AgentNameVersionMajor")
+        public void setAgentNameVersionMajor(TestRecord record, String value) {
+            record.agentNameVersionMajor = value;
+        }
     }
 
     @Test
@@ -59,6 +64,7 @@ public class TestUserAgentAnalysisMapperRaw {
                     "Chrome/48.0.2564.82 Safari/537.36",
                 "Desktop",
                 "Chrome 48.0.2564.82",
+                "Chrome 48",
                 null),
             record);
     }

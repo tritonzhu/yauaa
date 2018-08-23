@@ -79,6 +79,8 @@ import static nl.basjes.parse.useragent.UserAgent.SYNTAX_ERROR;
 import static nl.basjes.parse.useragent.Version.BUILD_TIME_STAMP;
 import static nl.basjes.parse.useragent.Version.GIT_COMMIT_ID_DESCRIBE_SHORT;
 import static nl.basjes.parse.useragent.Version.PROJECT_VERSION;
+import static nl.basjes.parse.useragent.pii.PIIFieldList.getSafeFields;
+import static nl.basjes.parse.useragent.pii.PIIFieldList.isDropPIIRequestField;
 import static nl.basjes.parse.useragent.utils.YamlUtils.fail;
 import static nl.basjes.parse.useragent.utils.YamlUtils.getExactlyOneNodeTuple;
 import static nl.basjes.parse.useragent.utils.YamlUtils.getKeyAsString;
@@ -108,6 +110,9 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
     // If we want ALL fields this is null. If we only want specific fields this is a list of names.
     protected List<String> wantedFieldNames = null;
 
+    // These are the fields that are needed to calculate the 'final' field we really need.
+    protected List<String> requiredIntermediateFields = new ArrayList<>();
+
     protected final List<Map<String, Map<String, String>>> testCases = new ArrayList<>(2048);
     private Map<String, Map<String, String>> lookups = new HashMap<>(128);
     private final Map<String, Set<String>> lookupSets = new HashMap<>(128);
@@ -117,6 +122,8 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
     public static final int DEFAULT_USER_AGENT_MAX_LENGTH = 2048;
     private int userAgentMaxLength = DEFAULT_USER_AGENT_MAX_LENGTH;
     private boolean loadTests = false;
+
+    private boolean dropPIIFields = false;
 
     private static final String DEFAULT_RESOURCES = "classpath*:UserAgents/**/*.yaml";
 
@@ -140,6 +147,7 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         lines.add("Matchers     : " + allMatchers.size());
         lines.add("Hashmap size : " + informMatcherActions.size());
         lines.add("Testcases    : " + testCases.size());
+        lines.add(dropPIIFields ? "Dropping PII fields" : "Keeping PII fields");
 
         String[] x = {};
         logVersion(lines.toArray(x));
@@ -181,6 +189,18 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         return testCases.size();
     }
 
+    public boolean willDropPIIFields() {
+        return dropPIIFields;
+    }
+
+    public void dropPIIFields() {
+        dropPIIFields = true;
+    }
+
+    public void keepPIIFields() {
+        dropPIIFields = false;
+    }
+
     protected void initialize() {
         initialize(Collections.singletonList(DEFAULT_RESOURCES));
     }
@@ -199,7 +219,8 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
             return; // Nothing to check
         }
         List<String> impossibleFields = new ArrayList<>();
-        List<String> allPossibleFields = getAllPossibleFieldNamesSorted();
+        Set<String> allPossibleFields = getAllPossibleFieldNames();
+        allPossibleFields.addAll(requiredIntermediateFields);
 
         for (String wantedFieldName: wantedFieldNames) {
             if (UserAgent.isSystemField(wantedFieldName)) {
@@ -215,8 +236,11 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         throw new InvalidParserConfigurationException("We cannot provide these fields:" + impossibleFields.toString());
     }
 
-    // --------------------------------------------
+    public List<String> getWantedFieldNames() {
+        return wantedFieldNames;
+    }
 
+    // --------------------------------------------
 
     public static String getVersion() {
         return "Yauaa " + PROJECT_VERSION + " (" + GIT_COMMIT_ID_DESCRIBE_SHORT + " @ " + BUILD_TIME_STAMP + ")";
@@ -275,7 +299,9 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
             try {
                 Resource resource = resourceEntry.getValue();
                 String filename = resource.getFilename();
-                maxFilenameLength = Math.max(maxFilenameLength, filename.length());
+                if (filename != null) {
+                    maxFilenameLength = Math.max(maxFilenameLength, filename.length());
+                }
                 loadResource(yaml, resource.getInputStream(), filename);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -307,6 +333,8 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         } else {
             LOG.info("Building all matchers for all possible fields.");
         }
+        LOG.info(dropPIIFields ? "Dropping PII fields" : "Keeping PII fields");
+
         int totalNumberOfMatchers = 0;
         int skippedMatchers = 0;
         if (matcherConfigs != null) {
@@ -379,6 +407,11 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         for (Matcher matcher : allMatchers) {
             results.addAll(matcher.getAllPossibleFieldNames());
         }
+        if (dropPIIFields) {
+            Set<String> allowed = new HashSet<>(getSafeFields());
+            results.retainAll(allowed);
+            return results;
+        }
         return results;
     }
 
@@ -388,8 +421,10 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
 
         List<String> result = new ArrayList<>();
         for (String fieldName : PRE_SORTED_FIELDS_LIST) {
-            fieldNames.remove(fieldName);
-            result.add(fieldName);
+            if (fieldNames.contains(fieldName)) {
+                fieldNames.remove(fieldName);
+                result.add(fieldName);
+            }
         }
         result.addAll(fieldNames);
 
@@ -764,13 +799,19 @@ config:
             }
 
             userAgent.processSetAll();
-            return hardCodedPostProcessing(userAgent);
+            userAgent = hardCodedPostProcessing(userAgent);
         } catch (NullPointerException npe) {
             userAgent.reset();
             userAgent = setAsHacker(userAgent, 10000);
             userAgent.setForced("HackerAttackVector", "Yauaa NPE Exploit", 10000);
-            return hardCodedPostProcessing(userAgent);
+            userAgent = hardCodedPostProcessing(userAgent);
         }
+
+        if (dropPIIFields) {
+            userAgent.wipePIIFields();
+        }
+
+        return userAgent;
     }
 
     private static final List<String> HARD_CODED_GENERATED_FIELDS = new ArrayList<>();
@@ -1136,6 +1177,7 @@ config:
         private final UAA uaa;
         private boolean didBuildStep = false;
         private int preheatIterations = 0;
+        private boolean dropPIIFields = false;
 
         private List<String> resources = new ArrayList<>();
 
@@ -1201,10 +1243,14 @@ config:
          */
         public B withField(String fieldName) {
             failIfAlreadyBuilt();
-            if (uaa.wantedFieldNames == null) {
-                uaa.wantedFieldNames = new ArrayList<>(32);
+            if (isDropPIIRequestField(fieldName)) {
+                dropPIIFields();
+            } else {
+                if (uaa.wantedFieldNames == null) {
+                    uaa.wantedFieldNames = new ArrayList<>(32);
+                }
+                uaa.wantedFieldNames.add(fieldName);
             }
-            uaa.wantedFieldNames.add(fieldName);
             return (B)this;
         }
 
@@ -1293,6 +1339,18 @@ config:
             return (B)this;
         }
 
+        public B dropPIIFields() {
+            uaa.dropPIIFields();
+            dropPIIFields = true;
+            return (B)this;
+        }
+
+        public B keepPIIFields() {
+            uaa.keepPIIFields();
+            dropPIIFields = false;
+            return (B)this;
+        }
+
         /**
          * Load all patterns and rules but do not yet build the lookup hashMaps yet.
          * For the engine to run these lookup hashMaps are needed so they will be constructed once "just in time".
@@ -1317,6 +1375,7 @@ config:
         private void addGeneratedFields(String result, String... dependencies) {
             if (uaa.wantedFieldNames.contains(result)) {
                 Collections.addAll(uaa.wantedFieldNames, dependencies);
+                Collections.addAll(uaa.requiredIntermediateFields, dependencies);
             }
         }
 
@@ -1326,7 +1385,15 @@ config:
          */
         public UAA build() {
             failIfAlreadyBuilt();
-            if (uaa.wantedFieldNames != null) {
+
+            if (dropPIIFields) {
+                if (uaa.wantedFieldNames == null) {
+                    withFields(getSafeFields());
+                }
+            }
+
+            if (resources.contains(DEFAULT_RESOURCES) &&
+                uaa.wantedFieldNames != null) {
                 addGeneratedFields("AgentNameVersion", AGENT_NAME, AGENT_VERSION);
                 addGeneratedFields("AgentNameVersionMajor", AGENT_NAME, AGENT_VERSION_MAJOR);
                 addGeneratedFields("WebviewAppNameVersionMajor", "WebviewAppName", "WebviewAppVersionMajor");

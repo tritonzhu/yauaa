@@ -40,14 +40,15 @@ public class UserAgentDissector extends Dissector {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserAgentDissector.class);
 
-    private UserAgentAnalyzerBuilder<?, ?> userAgentAnalyzerBuilder;
-    private static UserAgentAnalyzer userAgentAnalyzer = null;
+    private transient UserAgentAnalyzerBuilder<?, ?> userAgentAnalyzerBuilder;
+    private UserAgentAnalyzer userAgentAnalyzer = null;
     private static final String INPUT_TYPE = "HTTP.USERAGENT";
 
-    private List<String> extraResources = new ArrayList<>();
+    private List<String> additionalResources   = new ArrayList<>();
     private List<String> allPossibleFieldNames = new ArrayList<>();
-    private List<String> requestedFieldNames = new ArrayList<>();
+    private List<String> requestedFieldNames   = new ArrayList<>();
 
+    private boolean      dropPIIFields  = false;
 
     @Override
     public String getInputType() {
@@ -77,7 +78,11 @@ public class UserAgentDissector extends Dissector {
         String[] parameters = rawParameter.trim().split("\\|");
         for (String parameter: parameters) {
             if (!parameter.isEmpty()) {
-                extraResources.add(parameter);
+                if ("DropPII".equalsIgnoreCase(parameter)) {
+                    dropPIIFields = true;
+                } else {
+                    additionalResources.add(parameter);
+                }
             }
         }
         return true;
@@ -104,16 +109,30 @@ public class UserAgentDissector extends Dissector {
     public List<String> getPossibleOutput() {
         List<String> result = new ArrayList<>();
 
+        final UserAgentAnalyzerBuilder<?, ?> userAgentAnalyzerBuilder = UserAgentAnalyzer
+            .newBuilder()
+            .delayInitialization()
+            .dropTests()
+            .hideMatcherLoadStats();
+        for (String additionalResource: additionalResources) {
+            userAgentAnalyzerBuilder.addResources(additionalResource);
+        }
+        if (dropPIIFields) {
+            userAgentAnalyzerBuilder.dropPIIFields();
+        }
+
         // First the standard fields in the standard order, then the non-standard fields alphabetically
         final UserAgentAnalyzerBuilder<?, ?> builder = UserAgentAnalyzer.newBuilder();
-        extraResources.forEach(builder::addResources);
+        additionalResources.forEach(builder::addResources);
 
         allPossibleFieldNames = builder.build().getAllPossibleFieldNamesSorted();
         for (String fieldName : allPossibleFieldNames) {
             ensureMappingsExistForFieldName(fieldName);
             result.add(getFieldOutputType(fieldName) + ":" + fieldNameToDissectionName(fieldName));
+            if (dropPIIFields) {
+                result.add("DROPPIIFLAG:" + fieldNameToDissectionName("DropPII"));
+            }
         }
-
 //        result.forEach(f -> LOG.warn("Possible {}", f));
         return result;
     }
@@ -147,8 +166,8 @@ public class UserAgentDissector extends Dissector {
         LOG.info("Preparing UserAgentAnalyzer to extract {}", requestedFieldNames.isEmpty()? "all fields" : requestedFieldNames);
         final UserAgentAnalyzerBuilder<?, ?> builder = getUserAgentAnalyzerBuilder();
 
-        extraResources.forEach(r -> LOG.warn("Loading extra resource: {}", r));
-        extraResources.forEach(builder::addResources);
+        additionalResources.forEach(r -> LOG.warn("Loading extra resource: {}", r));
+        additionalResources.forEach(builder::addResources);
         requestedFieldNames.forEach(builder::withField);
         userAgentAnalyzer = getUserAgentAnalyzerBuilder().build();
         userAgentAnalyzer.initializeMatchers();
@@ -161,7 +180,7 @@ public class UserAgentDissector extends Dissector {
                 newInstance.getClass().getCanonicalName() + " which is not a UserAgentDissector");
         }
         UserAgentDissector newUserAgentDissector = (UserAgentDissector) newInstance;
-        newUserAgentDissector.extraResources = new ArrayList<>(extraResources);
+        newUserAgentDissector.additionalResources = new ArrayList<>(additionalResources);
         newUserAgentDissector.allPossibleFieldNames = new ArrayList<>(allPossibleFieldNames);
         newUserAgentDissector.requestedFieldNames = new ArrayList<>(requestedFieldNames);
         allPossibleFieldNames.forEach(newUserAgentDissector::ensureMappingsExistForFieldName);

@@ -26,9 +26,8 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class TestParseUserAgent {
+public class TestParseUserAgentDropPII {
 
     @Test
     public void testBasic() throws HiveException {
@@ -45,19 +44,14 @@ public class TestParseUserAgent {
             Object row = parseUserAgent.evaluate(new DeferredObject[]{new DeferredJavaObject(userAgent)});
 
             checkField(resultInspector, row, "DeviceName", "Linux Desktop");
-            checkField(resultInspector, row, "AgentNameVersion", "Chrome 58.0.3029.110");
+            checkField(resultInspector, row, "AgentNameVersion", null);
             checkField(resultInspector, row, "AgentNameVersionMajor", "Chrome 58");
+            checkField(resultInspector, row, "DropPII", "Unknown");
         }
     }
 
     private void checkField(StandardStructObjectInspector resultInspector, Object row, String fieldName, String expectedValue) {
         assertEquals(expectedValue, resultInspector.getStructFieldData(row, resultInspector.getStructFieldRef(fieldName)).toString());
-    }
-
-    @Test
-    public void testExplain() {
-        ParseUserAgent parseUserAgent = new ParseUserAgent();
-        assertTrue("Wrong explanation", parseUserAgent.getDisplayString(null).contains("UserAgent"));
     }
 
 }

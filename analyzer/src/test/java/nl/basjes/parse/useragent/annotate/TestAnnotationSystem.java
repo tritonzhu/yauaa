@@ -37,6 +37,7 @@ public class TestAnnotationSystem {
         final String useragent;
         String deviceClass;
         String agentNameVersion;
+        String agentNameVersionMajor;
 
         public TestRecord(String useragent) {
             this.useragent = useragent;
@@ -73,6 +74,11 @@ public class TestAnnotationSystem {
         @YauaaField("AgentNameVersion")
         public void setAgentNameVersion(TestRecord record, String value) {
             record.agentNameVersion = value;
+        }
+
+        @YauaaField("AgentNameVersionMajor")
+        public void setAgentNameVersionMajor(TestRecord record, String value) {
+            record.agentNameVersionMajor = value;
         }
     }
 

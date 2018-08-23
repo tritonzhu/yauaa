@@ -35,7 +35,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class TestUserAgentAnalysisMapperInline {
+public class TestUserAgentAnalysisMapperInlineDropPII {
     @Test
     public void testInlineDefinitionDataSet() throws Exception {
         ExecutionEnvironment environment = LocalEnvironment.getExecutionEnvironment();
@@ -57,6 +57,11 @@ public class TestUserAgentAnalysisMapperInline {
                 @Override
                 public String getUserAgentString(TestRecord record) {
                     return record.useragent;
+                }
+
+                @Override
+                public boolean dropPIIFields() {
+                    return true;
                 }
 
                 @YauaaField("DeviceClass")
@@ -89,7 +94,7 @@ public class TestUserAgentAnalysisMapperInline {
                     "AppleWebKit/537.36 (KHTML, like Gecko) " +
                     "Chrome/48.0.2564.82 Safari/537.36",
                 "Desktop",
-                "Chrome 48.0.2564.82",
+                null, // Dropped because of PII
                 "Chrome 48",
                 null),
 
@@ -98,7 +103,7 @@ public class TestUserAgentAnalysisMapperInline {
                     "AppleWebKit/537.36 (KHTML, like Gecko) " +
                     "Chrome/53.0.2785.124 Mobile Safari/537.36",
                 "Phone",
-                "Chrome 53.0.2785.124",
+                null, // Dropped because of PII
                 "Chrome 53",
                 null)
         ));
@@ -125,6 +130,11 @@ public class TestUserAgentAnalysisMapperInline {
                 @Override
                 public String getUserAgentString(TestRecord record) {
                     return record.useragent;
+                }
+
+                @Override
+                public boolean dropPIIFields() {
+                    return true;
                 }
 
                 @YauaaField("DeviceClass")
@@ -157,7 +167,7 @@ public class TestUserAgentAnalysisMapperInline {
                     "AppleWebKit/537.36 (KHTML, like Gecko) " +
                     "Chrome/48.0.2564.82 Safari/537.36",
                 "Desktop",
-                "Chrome 48.0.2564.82",
+                null, // Dropped because of PII
                 "Chrome 48",
                 null),
 
@@ -166,7 +176,7 @@ public class TestUserAgentAnalysisMapperInline {
                     "AppleWebKit/537.36 (KHTML, like Gecko) " +
                     "Chrome/53.0.2785.124 Mobile Safari/537.36",
                 "Phone",
-                "Chrome 53.0.2785.124",
+                null, // Dropped because of PII
                 "Chrome 53",
                 null)
         ));

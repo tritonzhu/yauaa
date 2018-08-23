@@ -38,18 +38,18 @@ public class TestUserAgentAnalysisDoFnInline implements Serializable {
     @Rule
     public final transient TestPipeline pipeline = TestPipeline.create();
 
+    private List<String> useragents = Arrays.asList(
+        "Mozilla/5.0 (X11; Linux x86_64) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/48.0.2564.82 Safari/537.36",
+
+        "Mozilla/5.0 (Linux; Android 7.0; Nexus 6 Build/NBD90Z) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/53.0.2785.124 Mobile Safari/537.36"
+    );
+
     @Test
     public void testInlineDefinition() {
-        List<String> useragents = Arrays.asList(
-            "Mozilla/5.0 (X11; Linux x86_64) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/48.0.2564.82 Safari/537.36",
-
-            "Mozilla/5.0 (Linux; Android 7.0; Nexus 6 Build/NBD90Z) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/53.0.2785.124 Mobile Safari/537.36"
-        );
-
         // Apply Create, passing the list and the coder, to create the PCollection.
         PCollection<String> input = pipeline.apply(Create.of(useragents)).setCoder(StringUtf8Coder.of());
 
@@ -78,15 +78,79 @@ public class TestUserAgentAnalysisDoFnInline implements Serializable {
                     public void setAgentNameVersion(TestRecord record, String value) {
                         record.agentNameVersion = value;
                     }
+
+                    @YauaaField("AgentNameVersionMajor")
+                    public void setAgentNameVersionMajor(TestRecord record, String value) {
+                        record.agentNameVersionMajor = value;
+                    }
                 }));
 
         TestRecord expectedRecord1 = new TestRecord(useragents.get(0));
         expectedRecord1.deviceClass = "Desktop";
         expectedRecord1.agentNameVersion = "Chrome 48.0.2564.82";
+        expectedRecord1.agentNameVersionMajor = "Chrome 48";
 
         TestRecord expectedRecord2 = new TestRecord(useragents.get(1));
         expectedRecord2.deviceClass = "Phone";
         expectedRecord2.agentNameVersion = "Chrome 53.0.2785.124";
+        expectedRecord2.agentNameVersionMajor = "Chrome 53";
+
+        PAssert.that(filledTestRecords).containsInAnyOrder(expectedRecord1, expectedRecord2);
+
+        pipeline.run().waitUntilFinish();
+    }
+
+    @Test
+    public void testInlineDefinitionDropPII() {
+        // Apply Create, passing the list and the coder, to create the PCollection.
+        PCollection<String> input = pipeline.apply(Create.of(useragents)).setCoder(StringUtf8Coder.of());
+
+        PCollection<TestRecord> testRecords = input
+            .apply("Create testrecords from input",
+                ParDo.of(new DoFn<String, TestRecord>() {
+                    @ProcessElement
+                    public void processElement(ProcessContext c) {
+                        c.output(new TestRecord(c.element()));
+                    }
+                }));
+
+        PCollection<TestRecord> filledTestRecords = testRecords
+            .apply("Extract Elements from Useragent",
+                ParDo.of(new UserAgentAnalysisDoFn<TestRecord>() {
+                    public String getUserAgentString(TestRecord record) {
+                        return record.useragent;
+                    }
+
+                    @Override
+                    public boolean dropPIIFields() {
+                        return true;
+                    }
+
+                    @YauaaField("DeviceClass")
+                    public void setDeviceClass(TestRecord record, String value) {
+                        record.deviceClass = value;
+                    }
+
+                    @YauaaField("AgentNameVersion")
+                    public void setAgentNameVersion(TestRecord record, String value) {
+                        record.agentNameVersion = value;
+                    }
+
+                    @YauaaField("AgentNameVersionMajor")
+                    public void setAgentNameVersionMajor(TestRecord record, String value) {
+                        record.agentNameVersionMajor = value;
+                    }
+                }));
+
+        TestRecord expectedRecord1 = new TestRecord(useragents.get(0));
+        expectedRecord1.deviceClass = "Desktop";
+        expectedRecord1.agentNameVersion = null;
+        expectedRecord1.agentNameVersionMajor = "Chrome 48";
+
+        TestRecord expectedRecord2 = new TestRecord(useragents.get(1));
+        expectedRecord2.deviceClass = "Phone";
+        expectedRecord2.agentNameVersion = null;
+        expectedRecord2.agentNameVersionMajor = "Chrome 53";
 
         PAssert.that(filledTestRecords).containsInAnyOrder(expectedRecord1, expectedRecord2);
 

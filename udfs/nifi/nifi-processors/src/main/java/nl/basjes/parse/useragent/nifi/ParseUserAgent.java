@@ -20,6 +20,7 @@ package nl.basjes.parse.useragent.nifi;
 import nl.basjes.parse.useragent.UserAgent;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import nl.basjes.parse.useragent.UserAgentAnalyzer.UserAgentAnalyzerBuilder;
+import nl.basjes.parse.useragent.pii.PIIFieldList;
 import org.apache.nifi.annotation.behavior.EventDriven;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
@@ -72,6 +73,7 @@ public class ParseUserAgent extends AbstractProcessor {
 
     private static final List<String> ALL_FIELD_NAMES = new ArrayList<>();
     private List<PropertyDescriptor> supportedPropertyDescriptors = new ArrayList<>();
+    private PropertyDescriptor dropPIIPropertyDescriptor;
     private List<String> extractFieldNames = new ArrayList<>();
 
     @Override
@@ -95,9 +97,10 @@ public class ParseUserAgent extends AbstractProcessor {
         this.relationships = Collections.unmodifiableSet(relationshipsSet);
 
         for (String fieldName: ALL_FIELD_NAMES) {
+            String pii = PIIFieldList.isPIISafeField(fieldName)? "" : " (PII)";
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor.Builder()
                 .name(PROPERTY_PREFIX + fieldName)
-                .description("If enabled will extract the " + fieldName + " field")
+                .description("If enabled will extract the " + fieldName + " field" + pii)
                 .required(true)
                 .allowableValues("true", "false")
                 .defaultValue("false")
@@ -106,6 +109,15 @@ public class ParseUserAgent extends AbstractProcessor {
             supportedPropertyDescriptors.add(propertyDescriptor);
         }
 
+        dropPIIPropertyDescriptor = new PropertyDescriptor.Builder()
+            .name("DropPII")
+            .description("If enabled the processing will fail if you requested any fields that are considered to be PII")
+            .required(true)
+            .allowableValues("true", "false")
+            .defaultValue("false")
+            .addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+            .build();
+        supportedPropertyDescriptors.add(dropPIIPropertyDescriptor);
     }
 
     @Override
@@ -129,14 +141,20 @@ public class ParseUserAgent extends AbstractProcessor {
 
             extractFieldNames.clear();
 
+            boolean dropPII = context.getProperty(dropPIIPropertyDescriptor).asBoolean();
+
             for (PropertyDescriptor propertyDescriptor: supportedPropertyDescriptors) {
+                if (propertyDescriptor.equals(dropPIIPropertyDescriptor)) {
+                    continue;
+                }
                 if (context.getProperty(propertyDescriptor).asBoolean()) {
                     String name = propertyDescriptor.getName();
                     if (name.startsWith(PROPERTY_PREFIX)) { // Should always pass
                         String fieldName = name.substring(PROPERTY_PREFIX.length());
-
-                        builder.withField(fieldName);
-                        extractFieldNames.add(fieldName);
+                        if (!dropPII || PIIFieldList.isPIISafeField(fieldName)) {
+                            builder.withField(fieldName);
+                            extractFieldNames.add(fieldName);
+                        }
                     }
                 }
             }

@@ -17,11 +17,15 @@
 
 package nl.basjes.parse.useragent.dissector;
 
+import nl.basjes.parse.core.Dissector;
 import nl.basjes.parse.core.Parser;
 import nl.basjes.parse.core.test.DissectorTester;
 import nl.basjes.parse.core.test.TestRecord;
 import nl.basjes.parse.httpdlog.HttpdLoglineParser;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -36,18 +40,46 @@ public class TestDissectUserAgent {
             .create()
             .withDissector(new UserAgentDissector())
             .withInput("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36")
-            .expect("STRING:device_class",             "Desktop")
-            .expect("STRING:device_name",              "Linux Desktop")
-            .expect("STRING:device_cpu",               "Intel x86_64")
-            .expect("STRING:operating_system_class",   "Desktop")
-            .expect("STRING:operating_system_name",    "Linux")
-            .expect("STRING:operating_system_version", "Intel x86_64")
-            .expect("STRING:layout_engine_class",      "Browser")
-            .expect("STRING:layout_engine_name",       "Blink")
-            .expect("STRING:layout_engine_version",    "48.0")
-            .expect("STRING:agent_class",              "Browser")
-            .expect("STRING:agent_name",               "Chrome")
-            .expect("STRING:agent_version",            "48.0.2564.82")
+            .expect("STRING:device_class",                 "Desktop")
+            .expect("STRING:device_name",                  "Linux Desktop")
+            .expect("STRING:device_cpu",                   "Intel x86_64")
+            .expect("STRING:operating_system_class",       "Desktop")
+            .expect("STRING:operating_system_name",        "Linux")
+            .expect("STRING:operating_system_version",     "Intel x86_64")
+            .expect("STRING:layout_engine_class",          "Browser")
+            .expect("STRING:layout_engine_name",           "Blink")
+            .expect("STRING:layout_engine_version",        "48.0")
+            .expect("STRING:layout_engine_version_major",  "48")
+            .expect("STRING:agent_class",                  "Browser")
+            .expect("STRING:agent_name",                   "Chrome")
+            .expect("STRING:agent_version",                "48.0.2564.82")
+            .expect("STRING:agent_version_major",          "48")
+            .checkExpectations();
+    }
+
+    @Test
+    public void testUserAgentDissectorNoPII() {
+        Dissector dissector = new UserAgentDissector();
+        assertTrue(dissector.initializeFromSettingsParameter("DropPII"));
+
+        DissectorTester
+            .create()
+            .withDissector(dissector)
+            .withInput("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36")
+            .expect("STRING:device_class",                 "Desktop")
+            .expect("STRING:device_name",                  "Linux Desktop")
+            .expect("STRING:device_cpu",                   "Intel x86_64")
+            .expect("STRING:operating_system_class",       "Desktop")
+            .expect("STRING:operating_system_name",        "Linux")
+            .expect("STRING:operating_system_version",     "Intel x86_64")
+            .expect("STRING:layout_engine_class",          "Browser")
+            .expect("STRING:layout_engine_name",           "Blink")
+            .expect("STRING:layout_engine_version",        "??")
+            .expect("STRING:layout_engine_version_major",  "48")
+            .expect("STRING:agent_class",                  "Browser")
+            .expect("STRING:agent_name",                   "Chrome")
+            .expect("STRING:agent_version",                "??")
+            .expect("STRING:agent_version_major",          "48")
             .checkExpectations();
     }
 
@@ -65,6 +97,8 @@ public class TestDissectUserAgent {
         assertEquals("FooBar",      uad.dissectionNameToFieldName("foo_bar"));
         assertEquals("FooBarBaz",   uad.dissectionNameToFieldName("foo_bar_baz"));
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestDissectUserAgent.class);
 
     @Test
     public void checkAllPossibleOutputs() {

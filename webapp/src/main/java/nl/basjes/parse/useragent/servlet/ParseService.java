@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
 
 @SpringBootApplication
 @RestController
@@ -104,8 +104,10 @@ public class ParseService {
         consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
         produces = MediaType.TEXT_HTML_VALUE
     )
-    public String getHtmlPOST(@ModelAttribute("useragent") String userAgent) {
-        return doHTML(userAgent);
+    public String getHtmlPOST(@ModelAttribute("useragent") String userAgent,
+                              @ModelAttribute("dropPII") String dropPIIFlag) {
+        boolean dropPII = (dropPIIFlag != null && !dropPIIFlag.isEmpty());
+        return doHTML(userAgent, dropPII);
     }
 
     @GetMapping(value = "/preheat", produces = MediaType.TEXT_HTML_VALUE)
@@ -139,6 +141,10 @@ public class ParseService {
     }
 
     private String doHTML(String userAgentString) {
+        return doHTML(userAgentString, false);
+    }
+
+    private String doHTML(String userAgentString, boolean dropPII) {
         ensureStarted();
         long start = System.nanoTime();
         long startParse=0;
@@ -159,7 +165,7 @@ public class ParseService {
 
             // While initializing automatically reload the page.
             if (isInitializing) {
-                sb.append("<meta http-equiv=\"refresh\" content=\"1\" >");
+                sb.append("<meta http-equiv=\"refresh\" content=\"1\" />");
             }
             sb.append("<link rel=\"stylesheet\" href=\"style.css\">");
             sb.append("<title>Analyzing the useragent</title>");
@@ -174,19 +180,35 @@ public class ParseService {
             sb.append("<hr/>");
 
             if (userAgentAnalyzerIsAvailable) {
+                if (dropPII && !userAgentAnalyzer.willDropPIIFields()) {
+                        userAgentAnalyzer.dropPIIFields();
+                }
+                if (!dropPII && userAgentAnalyzer.willDropPIIFields()) {
+                    userAgentAnalyzer.keepPIIFields();
+                }
+
                 startParse = System.nanoTime();
                 UserAgent userAgent = userAgentAnalyzer.parse(userAgentString);
                 stopParse = System.nanoTime();
+                userAgentAnalyzer.keepPIIFields();
 
                 sb.append("<h2 class=\"title\">The UserAgent</h2>");
                 sb.append("<p class=\"input\">").append(escapeHtml4(userAgent.getUserAgentString())).append("</p>");
                 sb.append("<h2 class=\"title\">The analysis result</h2>");
+                if (dropPII) {
+                    sb.append("<h3 class=\"title\">We have dropped all possibly PII sensitive fields</h2>");
+                } else {
+                    sb.append("<h3 class=\"title\">These are all available fields (including PII fields)</h2>");
+                }
                 sb.append("<table id=\"result\">");
                 sb.append("<tr><th colspan=2>Field</th><th>Value</th></tr>");
 
                 Map<String, Integer>                     fieldGroupCounts = new HashMap<>();
                 List<Pair<String, Pair<String, String>>> fields           = new ArrayList<>(32);
                 for (String fieldname : userAgent.getAvailableFieldNamesSorted()) {
+                    if (userAgent.getConfidence(fieldname)<0) {
+                        continue;
+                    }
                     Pair<String, String> split = prefixSplitter(fieldname);
                     fields.add(new ImmutablePair<>(fieldname, split));
                     Integer count = fieldGroupCounts.get(split.getLeft());
@@ -209,9 +231,11 @@ public class ParseService {
                         sb.append("<td rowspan=").append(fieldGroupCounts.get(currentGroup)).append("><b><u>")
                             .append(escapeHtml4(currentGroup)).append("</u></b></td>");
                     }
-                    sb.append("<td>").append(camelStretcher(escapeHtml4(fieldLabel))).append("</td>")
-                        .append("<td>").append(escapeHtml4(userAgent.getValue(fieldname))).append("</td>")
-                        .append("</tr>");
+                    if (userAgent.getConfidence(fieldname)>=0) {
+                        sb.append("<td>").append(camelStretcher(escapeHtml4(fieldLabel))).append("</td>")
+                            .append("<td>").append(escapeHtml4(userAgent.getValue(fieldname))).append("</td>")
+                            .append("</tr>");
+                    }
                 }
                 sb.append("</table>");
                 sb.append("<hr/>");
@@ -247,7 +271,28 @@ public class ParseService {
                 sb.append("<textarea id=\"useragent\" name=\"useragent\" maxlength=\"2000\" rows=\"4\" " +
                     "placeholder=\"Paste the useragent you want to test...\">")
                     .append(escapeHtml4(userAgentString)).append("</textarea>");
+
+                sb.append("<div>");
+                sb.append("<label for=\"dropPII\">Should we keep the PII fields?</label>");
+                /* Generated with https://proto.io/freebies/onoff/ */
+                sb.append("<div class=\"onoffswitch\">");
+                sb.append("<input type=\"checkbox\" name=\"dropPII\" class=\"onoffswitch-checkbox\" id=\"dropPII\"");
+                if (dropPII) {
+                    sb.append(" checked");
+                }
+                sb.append(">");
+                sb.append("<label class=\"onoffswitch-label\" for=\"dropPII\">");
+                sb.append("<span class=\"onoffswitch-inner\"></span>");
+                sb.append("<span class=\"onoffswitch-switch\"></span>");
+                sb.append("</label>");
+                sb.append("</div>");
+
+                sb.append("</div>");
+
+//                sb.append("<label for=\"dropPII\">Drop PII fields:</label>");
+//                sb.append("<input id=\"dropPII\" class=\"checkBox\" type=\"checkbox\" value=\"true\">");
                 sb.append("<input class=\"testButton\" type=\"submit\" value=\"Analyze\">");
+
                 sb.append("</form>");
                 sb.append("<br/>");
 

@@ -60,6 +60,20 @@ public class UserAgentAnalyzer extends UserAgentAnalyzerDirect implements Serial
     }
 
     @Override
+    public void dropPIIFields() {
+        // If you change the drop status the cache must be wiped.
+        initializeCache();
+        super.dropPIIFields();
+    }
+
+    @Override
+    public void keepPIIFields() {
+        // If you change the drop status the cache must be wiped.
+        initializeCache();
+        super.keepPIIFields();
+    }
+
+    @Override
     public synchronized UserAgent parse(UserAgent userAgent) {
         if (userAgent == null) {
             return null;

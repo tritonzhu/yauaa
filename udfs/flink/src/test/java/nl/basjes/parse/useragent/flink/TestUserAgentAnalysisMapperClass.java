@@ -52,6 +52,11 @@ public class TestUserAgentAnalysisMapperClass {
         public void setAgentNameVersion(TestRecord record, String value) {
             record.agentNameVersion = value;
         }
+
+        @YauaaField("AgentNameVersionMajor")
+        public void setAgentNameVersionMajor(TestRecord record, String value) {
+            record.agentNameVersionMajor = value;
+        }
     }
 
     @Test
@@ -88,6 +93,7 @@ public class TestUserAgentAnalysisMapperClass {
                     "Chrome/48.0.2564.82 Safari/537.36",
                 "Desktop",
                 "Chrome 48.0.2564.82",
+                "Chrome 48",
                 null),
 
             new TestRecord(
@@ -96,6 +102,7 @@ public class TestUserAgentAnalysisMapperClass {
                     "Chrome/53.0.2785.124 Mobile Safari/537.36",
                 "Phone",
                 "Chrome 53.0.2785.124",
+                "Chrome 53",
                 null)
         ));
     }
@@ -134,6 +141,7 @@ public class TestUserAgentAnalysisMapperClass {
                     "Chrome/48.0.2564.82 Safari/537.36",
                 "Desktop",
                 "Chrome 48.0.2564.82",
+                "Chrome 48",
                 null),
 
             new TestRecord(
@@ -142,6 +150,7 @@ public class TestUserAgentAnalysisMapperClass {
                     "Chrome/53.0.2785.124 Mobile Safari/537.36",
                 "Phone",
                 "Chrome 53.0.2785.124",
+                "Chrome 53",
                 null)
         ));
     }

@@ -19,4 +19,8 @@ package nl.basjes.parse.useragent.annotate;
 
 public interface UserAgentAnnotationMapper<T> {
     String getUserAgentString(T record);
+
+    default boolean dropPIIFields() {
+        return false;
+    }
 }
