@@ -169,7 +169,10 @@ public class UserAgentDissector extends Dissector {
         additionalResources.forEach(r -> LOG.warn("Loading extra resource: {}", r));
         additionalResources.forEach(builder::addResources);
         requestedFieldNames.forEach(builder::withField);
-        userAgentAnalyzer = getUserAgentAnalyzerBuilder().build();
+        if (dropPIIFields) {
+            builder.dropPIIFields();
+        }
+        userAgentAnalyzer = builder.build();
         userAgentAnalyzer.initializeMatchers();
     }
 
@@ -180,6 +183,7 @@ public class UserAgentDissector extends Dissector {
                 newInstance.getClass().getCanonicalName() + " which is not a UserAgentDissector");
         }
         UserAgentDissector newUserAgentDissector = (UserAgentDissector) newInstance;
+        newUserAgentDissector.dropPIIFields = dropPIIFields;
         newUserAgentDissector.additionalResources = new ArrayList<>(additionalResources);
         newUserAgentDissector.allPossibleFieldNames = new ArrayList<>(allPossibleFieldNames);
         newUserAgentDissector.requestedFieldNames = new ArrayList<>(requestedFieldNames);
