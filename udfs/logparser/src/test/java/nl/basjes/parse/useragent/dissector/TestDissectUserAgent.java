@@ -22,7 +22,6 @@ import nl.basjes.parse.core.Parser;
 import nl.basjes.parse.core.test.DissectorTester;
 import nl.basjes.parse.core.test.TestRecord;
 import nl.basjes.parse.httpdlog.HttpdLoglineParser;
-import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

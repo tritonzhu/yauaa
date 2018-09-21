@@ -181,7 +181,7 @@ public class ParseService {
 
             if (userAgentAnalyzerIsAvailable) {
                 if (dropPII && !userAgentAnalyzer.willDropPIIFields()) {
-                        userAgentAnalyzer.dropPIIFields();
+                    userAgentAnalyzer.dropPIIFields();
                 }
                 if (!dropPII && userAgentAnalyzer.willDropPIIFields()) {
                     userAgentAnalyzer.keepPIIFields();

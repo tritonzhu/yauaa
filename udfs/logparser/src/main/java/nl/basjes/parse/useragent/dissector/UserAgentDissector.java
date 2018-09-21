@@ -109,16 +109,16 @@ public class UserAgentDissector extends Dissector {
     public List<String> getPossibleOutput() {
         List<String> result = new ArrayList<>();
 
-        final UserAgentAnalyzerBuilder<?, ?> userAgentAnalyzerBuilder = UserAgentAnalyzer
+        final UserAgentAnalyzerBuilder<?, ?> uaaBuilder = UserAgentAnalyzer
             .newBuilder()
             .delayInitialization()
             .dropTests()
             .hideMatcherLoadStats();
         for (String additionalResource: additionalResources) {
-            userAgentAnalyzerBuilder.addResources(additionalResource);
+            uaaBuilder.addResources(additionalResource);
         }
         if (dropPIIFields) {
-            userAgentAnalyzerBuilder.dropPIIFields();
+            uaaBuilder.dropPIIFields();
         }
 
         // First the standard fields in the standard order, then the non-standard fields alphabetically
