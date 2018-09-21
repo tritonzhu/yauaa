@@ -57,6 +57,7 @@ benchmarks/*.csv
 # Local test files and scripts
 testfiles
 _*
+!_layouts
 *.tar.gz
 
 # LibreOffice lock file
