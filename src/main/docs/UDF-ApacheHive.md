@@ -32,6 +32,12 @@ or by defining it as a [permanent function](https://cwiki.apache.org/confluence/
     AS 'nl.basjes.parse.useragent.hive.ParseUserAgent' 
     USING JAR 'hdfs:///yauaa-hive-4.3-udf.jar';
 
+to drop the PII fields you can do this instead
+
+    CREATE FUNCTION ParseUserAgent
+    AS 'nl.basjes.parse.useragent.hive.ParseUserAgentDropPII'
+    USING JAR 'hdfs:///yauaa-hive-4.3-udf.jar';
+
 or installing it locally with the Hive Server
 
 ***TODO: Document installation*** 

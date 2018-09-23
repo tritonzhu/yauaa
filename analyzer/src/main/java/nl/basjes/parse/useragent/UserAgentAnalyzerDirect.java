@@ -272,7 +272,7 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
         int maxFilenameLength = 0;
 
         if (resources.isEmpty()) {
-            throw new InvalidParserConfigurationException("Unable to find ANY config files");
+            throw new InvalidParserConfigurationException("Unable to find ANY config files in : " + resourceString);
         }
 
         // We need to determine if we are trying to load the yaml files TWICE.

@@ -19,7 +19,7 @@ For people using the latest Chrome on the most common operating system (Windows 
 
 > Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.8 Safari/537.36
 
-However for people with a lot of plugins the level of uniqueness increases.  
+However for people using an older Internet Explorer with a lot of plugins the level of uniqueness increases.
 
 > Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/7.0; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; .NET4.0C; .NET4.0E; BRI/2; eSobiSubscriber 1.0.0.40; MAAR; Media Center PC 6.0; SLCC2; ms-office)
 
@@ -27,13 +27,12 @@ Sometimes the useragent even includes a UUID making it guaranteed unique.
 
 > Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SIMBAR={51037e31-26af-4b94-9d65-77ef810e55bb}; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; InfoPath.2)
 
-and between these there are lots of greyscales.
+and between these three there are lots of greyscales.
 
 So in general I think that for some visitors the Useragent is actually a PII field.
 
-
 To allow people to have an easier way of knowing which fields can be used to effectively un-PII the useragent I have created
-a list of the field names that I believe to be 'safe enough'. 
+a list of the field names that _I_ believe to be 'safe enough'.
 
 **Important here is this is what _I_ believe, like I said: I am NOT a lawyer so I may very well be wrong about this.**
 

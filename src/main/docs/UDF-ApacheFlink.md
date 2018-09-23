@@ -42,6 +42,14 @@ Note that the name of the two setters is not important, the system looks at the 
         }
     })
 
+# Dropping PII fields
+If you want to get rid of the PII fields you simply override this method aswell
+
+    @Override
+    public boolean dropPIIFields() {
+        return true;
+    }
+
 ## NOTES on defining it as an anonymous class
 An anonymous inner class in Java is [by default private](https://stackoverflow.com/questions/319765/accessing-inner-anonymous-class-members).
 

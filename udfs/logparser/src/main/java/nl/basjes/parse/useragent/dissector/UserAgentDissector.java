@@ -77,6 +77,7 @@ public class UserAgentDissector extends Dissector {
 
         String[] parameters = rawParameter.trim().split("\\|");
         for (String parameter: parameters) {
+            parameter = parameter.trim();
             if (!parameter.isEmpty()) {
                 if ("DropPII".equalsIgnoreCase(parameter)) {
                     dropPIIFields = true;

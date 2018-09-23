@@ -43,6 +43,14 @@ Note that the name of the two setters is not important, the system looks at the 
             }
         }));
 
+# Dropping PII fields
+If you want to get rid of the PII fields you simply override this method aswell
+
+    @Override
+    public boolean dropPIIFields() {
+        return true;
+    }
+
 ## Immutable instances in Apache Beam
 Apache Beam requires a DoFn to never modify the provided instance and to always return a new instance that is then passed to the next processing step.
 To handle this in a generic way UserAgentAnalysisDoFn has a "clone" method that does this by means of doing a round trip through serialization. If you can do a more efficient way for your specific class then please override the clone method.

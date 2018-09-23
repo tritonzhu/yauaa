@@ -26,15 +26,17 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TestParseUserAgent {
 
+    private ParseUserAgent parseUserAgent = new ParseUserAgent();
+
     @Test
     public void testBasic() throws HiveException {
         String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
-
-        ParseUserAgent parseUserAgent = new ParseUserAgent();
 
         StandardStructObjectInspector resultInspector = (StandardStructObjectInspector) parseUserAgent
             .initialize(new ObjectInspector[]{
@@ -50,13 +52,22 @@ public class TestParseUserAgent {
         }
     }
 
+    @Test
+    public void testDisplayString(){
+        assertNotNull(parseUserAgent.getDisplayString(null));
+    }
+
     private void checkField(StandardStructObjectInspector resultInspector, Object row, String fieldName, String expectedValue) {
-        assertEquals(expectedValue, resultInspector.getStructFieldData(row, resultInspector.getStructFieldRef(fieldName)).toString());
+        Object fieldData = resultInspector.getStructFieldData(row, resultInspector.getStructFieldRef(fieldName));
+        if (expectedValue == null) {
+            assertNull(fieldData);
+        } else {
+            assertEquals(expectedValue, fieldData.toString());
+        }
     }
 
     @Test
     public void testExplain() {
-        ParseUserAgent parseUserAgent = new ParseUserAgent();
         assertTrue("Wrong explanation", parseUserAgent.getDisplayString(null).contains("UserAgent"));
     }
 

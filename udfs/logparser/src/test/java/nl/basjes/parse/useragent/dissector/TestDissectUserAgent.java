@@ -22,7 +22,10 @@ import nl.basjes.parse.core.Parser;
 import nl.basjes.parse.core.test.DissectorTester;
 import nl.basjes.parse.core.test.TestRecord;
 import nl.basjes.parse.httpdlog.HttpdLoglineParser;
+import nl.basjes.parse.useragent.analyze.InvalidParserConfigurationException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,27 +36,57 @@ import static org.junit.Assert.assertTrue;
 
 public class TestDissectUserAgent {
 
-    @Test
-    public void testUserAgentDissector() {
-        DissectorTester
-            .create()
-            .withDissector(new UserAgentDissector())
-            .withInput("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36")
-            .expect("STRING:device_class",                 "Desktop")
-            .expect("STRING:device_name",                  "Linux Desktop")
-            .expect("STRING:device_cpu",                   "Intel x86_64")
-            .expect("STRING:operating_system_class",       "Desktop")
-            .expect("STRING:operating_system_name",        "Linux")
-            .expect("STRING:operating_system_version",     "Intel x86_64")
+    @Rule
+    public final transient ExpectedException expectedEx = ExpectedException.none();
+
+    String testInput = "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) " +
+        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+        "Chrome/41.0.2272.96 " +
+        "Mobile Safari/537.36(https://yauaa.basjes.nl:8080/something.html?aap=noot&mies=wim#zus)";
+
+    private void expectNormalFields(DissectorTester dissectorTester) {
+        dissectorTester
+            .expect("STRING:device_class",                 "Phone")
+            .expect("STRING:device_name",                  "Google Nexus 5X")
+            .expect("STRING:device_cpu",                   "Unknown")
+            .expect("STRING:operating_system_class",       "Mobile")
+            .expect("STRING:operating_system_name",        "Android")
+            .expect("STRING:operating_system_version",     "6.0.1")
             .expect("STRING:layout_engine_class",          "Browser")
             .expect("STRING:layout_engine_name",           "Blink")
-            .expect("STRING:layout_engine_version",        "48.0")
-            .expect("STRING:layout_engine_version_major",  "48")
+            .expect("STRING:layout_engine_version_major",  "41")
             .expect("STRING:agent_class",                  "Browser")
             .expect("STRING:agent_name",                   "Chrome")
-            .expect("STRING:agent_version",                "48.0.2564.82")
-            .expect("STRING:agent_version_major",          "48")
-            .checkExpectations();
+            .expect("STRING:agent_version_major",          "41");
+    }
+
+    private void expectPIIFieldsNormal(DissectorTester dissectorTester) {
+        dissectorTester
+            .expect("STRING:layout_engine_version",        "41.0")
+            .expect("STRING:agent_version",                "41.0.2272.96");
+    }
+
+    private void expectPIIFieldsEmpty(DissectorTester dissectorTester) {
+        dissectorTester
+            .expect("STRING:layout_engine_version",        "??")
+            .expect("STRING:agent_version",                "??");
+    }
+
+
+    @Test
+    public void testUserAgentDissector() {
+        Dissector dissector = new UserAgentDissector();
+        assertTrue(dissector.initializeFromSettingsParameter(""));
+
+        DissectorTester dissectorTester = DissectorTester
+            .create()
+            .withDissector(dissector)
+            .withInput(testInput);
+
+        expectNormalFields(dissectorTester);
+        expectPIIFieldsNormal(dissectorTester);
+
+        dissectorTester.checkExpectations();
     }
 
     @Test
@@ -61,26 +94,70 @@ public class TestDissectUserAgent {
         Dissector dissector = new UserAgentDissector();
         assertTrue(dissector.initializeFromSettingsParameter("DropPII"));
 
-        DissectorTester
+        DissectorTester dissectorTester = DissectorTester
             .create()
             .withDissector(dissector)
-            .withInput("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36")
-            .expect("STRING:device_class",                 "Desktop")
-            .expect("STRING:device_name",                  "Linux Desktop")
-            .expect("STRING:device_cpu",                   "Intel x86_64")
-            .expect("STRING:operating_system_class",       "Desktop")
-            .expect("STRING:operating_system_name",        "Linux")
-            .expect("STRING:operating_system_version",     "Intel x86_64")
-            .expect("STRING:layout_engine_class",          "Browser")
-            .expect("STRING:layout_engine_name",           "Blink")
-            .expect("STRING:layout_engine_version",        "??")
-            .expect("STRING:layout_engine_version_major",  "48")
-            .expect("STRING:agent_class",                  "Browser")
-            .expect("STRING:agent_name",                   "Chrome")
-            .expect("STRING:agent_version",                "??")
-            .expect("STRING:agent_version_major",          "48")
+            .withInput(testInput);
+
+        expectNormalFields(dissectorTester);
+        expectPIIFieldsEmpty(dissectorTester);
+
+        dissectorTester.checkExpectations();
+    }
+
+    @Test
+    public void testUserAgentDissectorExtraRules() {
+        Dissector dissector = new UserAgentDissector();
+        assertTrue(dissector.initializeFromSettingsParameter("classpath*:**/CustomPatterns.yaml"));
+
+        DissectorTester dissectorTester = DissectorTester
+            .create()
+            .withDissector(dissector)
+            .withInput(testInput);
+
+        expectNormalFields(dissectorTester);
+        expectPIIFieldsNormal(dissectorTester);
+
+        dissectorTester.expect("STRING:my_totally_useless_value", "Nexus 5X");
+        dissectorTester.checkExpectations();
+    }
+
+    @Test
+    public void testUserAgentDissectorNoPIIExtraRules() {
+        expectedEx.expect(InvalidParserConfigurationException.class);
+        expectedEx.expectMessage("We cannot provide these fields:[MyTotallyUselessValue]");
+
+        Dissector dissector = new UserAgentDissector();
+        assertTrue(dissector.initializeFromSettingsParameter("classpath*:**/CustomPatterns.yaml|DropPIIs"));
+
+        DissectorTester dissectorTester = DissectorTester
+            .create()
+            .withDissector(dissector)
+            .withInput(testInput);
+
+        expectNormalFields(dissectorTester);
+        expectPIIFieldsEmpty(dissectorTester);
+        dissectorTester.expect("STRING:my_totally_useless_value", "Will never get here");
+
+        dissectorTester.checkExpectations();
+    }
+
+    @Test
+    public void testUserAgentDissectorExtraRulesThatDoNotExist() {
+        expectedEx.expect(InvalidParserConfigurationException.class);
+        expectedEx.expectMessage("Unable to find ANY config files in : classpath*:**/DoesNotExist.yaml");
+
+        Dissector dissector = new UserAgentDissector();
+        assertTrue(dissector.initializeFromSettingsParameter(" |  |  | classpath*:**/CustomPatterns.yaml |  DrOpPiI | classpath*:**/DoesNotExist.yaml"));
+
+        DissectorTester dissectorTester = DissectorTester
+            .create()
+            .withDissector(dissector)
+            .withInput(testInput)
+            .expect("STRING:device_class", "Phone")
             .checkExpectations();
     }
+
 
     @Test
     public void validateNameConversion() {

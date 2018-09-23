@@ -37,9 +37,7 @@ import java.util.List;
  * An example statement
  * would be:
  * <pre>
- *   ADD JAR
  ADD JAR hdfs:///yauaa-hive-2.0-SNAPSHOT-udf.jar;
-
 
  USING JAR 'hdfs:/plugins/yauaa-hive-2.0-SNAPSHOT-udf.jar';
 
@@ -70,10 +68,10 @@ import java.util.List;
 public class ParseUserAgent extends GenericUDF {
 
     private static StringObjectInspector useragentOI = null;
-    private static UserAgentAnalyzer userAgentAnalyzer = null;
+    protected static UserAgentAnalyzer userAgentAnalyzer = null;
     private static List<String> fieldNames = null;
 
-    private static synchronized void constructAnalyzer(){
+    protected synchronized UserAgentAnalyzer constructAnalyzer(){
         if (userAgentAnalyzer == null) {
             userAgentAnalyzer = UserAgentAnalyzer
                 .newBuilder()
@@ -82,6 +80,7 @@ public class ParseUserAgent extends GenericUDF {
                 .build();
             fieldNames = userAgentAnalyzer.getAllPossibleFieldNamesSorted();
         }
+        return userAgentAnalyzer;
     }
 
     @Override
@@ -95,8 +94,6 @@ public class ParseUserAgent extends GenericUDF {
             throw new UDFArgumentException("The argument must be a string");
         }
         useragentOI = (StringObjectInspector) inputOI;
-
-        // TODO: Implement optional extra argument to DropPII fields.
 
         // ================================
         // Initialize the parser

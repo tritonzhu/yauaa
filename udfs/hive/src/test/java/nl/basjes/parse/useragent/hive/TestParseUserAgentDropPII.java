@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TestParseUserAgentDropPII {
 
@@ -33,7 +34,7 @@ public class TestParseUserAgentDropPII {
     public void testBasic() throws HiveException {
         String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
 
-        ParseUserAgent parseUserAgent = new ParseUserAgent();
+        ParseUserAgent parseUserAgent = new ParseUserAgentDropPII();
 
         StandardStructObjectInspector resultInspector = (StandardStructObjectInspector) parseUserAgent
             .initialize(new ObjectInspector[]{
@@ -46,12 +47,16 @@ public class TestParseUserAgentDropPII {
             checkField(resultInspector, row, "DeviceName", "Linux Desktop");
             checkField(resultInspector, row, "AgentNameVersion", null);
             checkField(resultInspector, row, "AgentNameVersionMajor", "Chrome 58");
-            checkField(resultInspector, row, "DropPII", "Unknown");
         }
     }
 
     private void checkField(StandardStructObjectInspector resultInspector, Object row, String fieldName, String expectedValue) {
-        assertEquals(expectedValue, resultInspector.getStructFieldData(row, resultInspector.getStructFieldRef(fieldName)).toString());
+        Object fieldData = resultInspector.getStructFieldData(row, resultInspector.getStructFieldRef(fieldName));
+        if (expectedValue == null) {
+            assertNull(fieldData);
+        } else {
+            assertEquals(expectedValue, fieldData.toString());
+        }
     }
 
 }
