@@ -92,7 +92,7 @@ public class TestDissectUserAgent {
     @Test
     public void testUserAgentDissectorNoPII() {
         Dissector dissector = new UserAgentDissector();
-        assertTrue(dissector.initializeFromSettingsParameter("DropPII"));
+        assertTrue(dissector.initializeFromSettingsParameter("DrOpPiI"));
 
         DissectorTester dissectorTester = DissectorTester
             .create()
@@ -128,7 +128,7 @@ public class TestDissectUserAgent {
         expectedEx.expectMessage("We cannot provide these fields:[MyTotallyUselessValue]");
 
         Dissector dissector = new UserAgentDissector();
-        assertTrue(dissector.initializeFromSettingsParameter("classpath*:**/CustomPatterns.yaml|DropPIIs"));
+        assertTrue(dissector.initializeFromSettingsParameter("classpath*:**/CustomPatterns.yaml|DropPII"));
 
         DissectorTester dissectorTester = DissectorTester
             .create()
@@ -148,7 +148,8 @@ public class TestDissectUserAgent {
         expectedEx.expectMessage("Unable to find ANY config files in : classpath*:**/DoesNotExist.yaml");
 
         Dissector dissector = new UserAgentDissector();
-        assertTrue(dissector.initializeFromSettingsParameter(" |  |  | classpath*:**/CustomPatterns.yaml |  DrOpPiI | classpath*:**/DoesNotExist.yaml"));
+        assertTrue(dissector.initializeFromSettingsParameter(
+            " |  |  | classpath*:**/CustomPatterns.yaml |  DrOpPiI | classpath*:**/DoesNotExist.yaml"));
 
         DissectorTester dissectorTester = DissectorTester
             .create()

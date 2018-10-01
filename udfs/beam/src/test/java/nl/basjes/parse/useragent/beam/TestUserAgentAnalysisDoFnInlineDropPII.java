@@ -34,9 +34,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.fail;
-
-
 public class TestUserAgentAnalysisDoFnInlineDropPII implements Serializable {
 
     @Rule
