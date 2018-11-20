@@ -100,7 +100,6 @@ config:
       "PadFone"                 : "Asus"
       "Transformer"             : "Asus"
 
-      "9300"                    : "BlackBerry"
       "BBA"                     : "BlackBerry"
       "BBB"                     : "BlackBerry"
       "BBC"                     : "BlackBerry"
