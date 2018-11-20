@@ -32,33 +32,33 @@ config:
       "2014818"       : "Redmi 2"
       "2014819"       : "Redmi 2"
 
-- matcher:
-    variable:
-    - 'Product:agent.product.comments.entry{"Redmi"'
-    extract:
-    - 'DeviceName                          :    301 :@Product'
-    - 'DeviceBrand                         :   3000 :"Xiaomi"'
-
-- matcher:
-    variable:
-    - 'Product:agent.product.comments.entry{"MI "'
-    extract:
-    - 'DeviceName                          :    301 :@Product'
-    - 'DeviceBrand                         :   1010 :"Xiaomi"'
-
-- matcher:
-    variable:
-    - 'Product:agent.product.comments.entry{"MIX "'
-    extract:
-    - 'DeviceName                          :    301 :@Product'
-    - 'DeviceBrand                         :   1010 :"Xiaomi"'
-
-- matcher:
-    variable:
-    - 'Product:agent.(1)product.(1)comments.entry.(1)product.(1)name{"Mi-"'
-    extract:
-    - 'DeviceName                          :    301 :@Product'
-    - 'DeviceBrand                         :   1010 :"Xiaomi"'
+#- matcher:
+#    variable:
+#    - 'Product:agent.product.comments.entry{"Redmi"'
+#    extract:
+#    - 'DeviceName                          :    301 :@Product'
+#    - 'DeviceBrand                         :   3000 :"Xiaomi"'
+#
+#- matcher:
+#    variable:
+#    - 'Product:agent.product.comments.entry{"MI "'
+#    extract:
+#    - 'DeviceName                          :    301 :@Product'
+#    - 'DeviceBrand                         :   1010 :"Xiaomi"'
+#
+#- matcher:
+#    variable:
+#    - 'Product:agent.product.comments.entry{"MIX "'
+#    extract:
+#    - 'DeviceName                          :    301 :@Product'
+#    - 'DeviceBrand                         :   1010 :"Xiaomi"'
+#
+#- matcher:
+#    variable:
+#    - 'Product:agent.(1)product.(1)comments.entry.(1)product.(1)name{"Mi-"'
+#    extract:
+#    - 'DeviceName                          :    301 :@Product'
+#    - 'DeviceBrand                         :   1010 :"Xiaomi"'
 
 - matcher:
     variable:
