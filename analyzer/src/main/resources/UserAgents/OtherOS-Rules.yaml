@@ -1,0 +1,36 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+config:
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :     10 :"Desktop"'
+    - 'DeviceName                          :     10 :"Desktop"'
+    - 'OperatingSystemClass                :     10 :"Desktop"'
+    - 'OperatingSystemName                 :     10 :agent.product.comments.entry="OS/2"'
+    - 'OperatingSystemVersion              :     10 :"2.x"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :     20 :"Desktop"'
+    - 'DeviceName                          :     20 :"Desktop"'
+    - 'OperatingSystemClass                :     20 :"Desktop"'
+    - 'OperatingSystemName                 :     20 :agent.product.comments.entry="OS/2"'
+    - 'OperatingSystemVersion              :     20 :agent.product.comments.entry.product.name="Warp"^'
+
+

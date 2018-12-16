@@ -1,0 +1,167 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+config:
+
+# We see the following patterns
+# Linux <version>
+# Linux <cpu>
+# Linux <version> <cpu>
+
+# Default in case there is a very bare set of comments.
+- matcher:
+    require:
+    -  'agent.(1)product.comments.entry.text="X11"'
+    -  'IsNull[agent.(1)product.(1)comments.(2)entry]'
+    extract:
+    - 'DeviceClass                         :      1 :"Desktop"'
+    - 'DeviceName                          :      1 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      1 :"Desktop"'
+    - 'OperatingSystemName                 :      1 :"Linux"'
+
+- matcher:
+    require:
+    -  'IsNull[agent.(1-2)product.comments.entry.text="Android"]'
+    extract:
+    - 'DeviceClass                         :      5 :"Desktop"'
+    - 'DeviceName                          :      5 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      5 :"Desktop"'
+    - 'OperatingSystemName                 :      5 :"Linux"'
+    - 'OperatingSystemVersion              :      6 :LookUp[CPUArchitectures;agent.(1-2)product.(1)comments.entry.product.name="Linux"^.version]'
+
+- matcher:
+    require:
+    -  'IsNull[agent.(1-2)product.comments.entry.text="Android"]'
+    extract:
+    - 'DeviceClass                         :      5 :"Desktop"'
+    - 'DeviceName                          :      5 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      5 :"Desktop"'
+    - 'OperatingSystemName                 :      5 :"Linux"'
+    - 'OperatingSystemVersion              :      6 :LookUp[CPUArchitectures;agent.(1-2)product.(1)comments.entry.text[1]="Linux"@[2]]'
+
+- matcher:
+    require:
+    -  'IsNull[agent.(1-2)product.comments.entry.text="Android"]'
+    extract:
+    - 'DeviceClass                         :      5 :"Desktop"'
+    - 'DeviceName                          :      5 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      5 :"Desktop"'
+    - 'OperatingSystemName                 :      5 :"Linux"'
+    - 'OperatingSystemVersion              :      4 :agent.(1-2)product.(1)comments.entry.product.name="Linux"^.version'
+
+- matcher:
+    require:
+    - 'IsNull[agent.(1-2)product.comments.entry.text="Android"]'
+    extract:
+    - 'DeviceClass                         :      5 :"Desktop"'
+    - 'DeviceName                          :      5 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      5 :"Desktop"'
+    - 'OperatingSystemName                 :      5 :"Linux"'
+    - 'OperatingSystemVersion              :      3 :agent.product.(1)name="Linux"^.version'
+
+- matcher:
+    require:
+    - 'IsNull[agent.(1-2)product.comments.entry.text="Android"]'
+    - 'agent.(1-2)product.(1)comments.entry.text[1]="Linux"'
+    extract:
+    - 'DeviceClass                         :      5 :"Desktop"'
+    - 'DeviceName                          :      5 :"Linux Desktop"'
+    - 'OperatingSystemClass                :      5 :"Desktop"'
+    - 'OperatingSystemName                 :      5 :"Linux"'
+    - 'OperatingSystemVersion              :      1 :"??"'
+
+- matcher:
+    require:
+    - 'IsNull[LookUp[CPUArchitectures;agent.(1-2)product.(1)comments.entry.product.name="Linux"^.(1)version]]'
+    extract:
+#        - 'DeviceCpu             :   1:"??"'
+    - 'OperatingSystemVersion              :      5 :agent.(1-2)product.(1)comments.entry.product.name="Linux"^.(1)version'
+
+- matcher:
+    require:
+    - 'agent.(1-2)product.(1)comments.entry.product.name="Linux"'
+    extract:
+    - 'DeviceCpu                           :     15 :LookUp[CPUArchitectures;agent.(1)product.(1)comments.entry.product.name="Linux"^.(2)version]'
+    - 'OperatingSystemVersion              :     15 :agent.(1)product.(1)comments.entry.product.name="Linux"^.(1)version'
+
+- matcher:
+    extract:
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :"Epiphany"'
+    - 'AgentVersion                        :   2010 :agent.product.name="Epiphany"^.version'
+
+
+- matcher:
+    extract:
+    - 'OperatingSystemClass                :   2010 :"Desktop"'
+    - 'OperatingSystemName                 :   2010 :"Elementary OS"'
+    - 'OperatingSystemVersion              :   2010 :agent.product.name="Elementary OS"^.version'
+
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :      3 :"Browser"'
+    - 'LayoutEngineName                    :      3 :"Mozilla"'
+    - 'LayoutEngineVersion                 :      3 :agent.(1)product.(1)name="Mozilla"^.version'
+    - 'AgentClass                          :      3 :"Browser"'
+    - 'AgentName                           :      3 :"Netscape"'
+    - 'AgentVersion                        :      3 :agent.(1)product.(1)name="Mozilla"^.version'
+
+# Joli
+# Linux Mint
+# Detect the patterns in the second product
+
+#TODO All Ubuntu variants (Kubuntu)
+# https://wiki.ubuntu.com/UbuntuFlavors
+# - Ubuntu
+# - Kubuntu
+# - Edubuntu
+# - Xubuntu
+# - Mythbuntu
+# - UbuntuStudio
+# - Lubuntu
+# - Ubuntu GNOME
+# - Ubuntu Kylin
+# - Ubuntu MATE
+
+- matcher:
+    variable:
+    - 'UbuntuProductName: agent.(1)product.(1)comments.entry.(1)product.(1)name~"buntu"'
+    extract:
+    - 'OperatingSystemName                 :    100 :@UbuntuProductName'
+    - 'OperatingSystemVersion              :    100 :@UbuntuProductName^.version="14.04.1"'
+
+# Ubuntu Touch
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.(2)entry.(1)product.(1)name="Ubuntu"'
+    - 'agent.(1)product.(1)comments.(2)entry.(2)product.(1)name="like Android"'
+    extract:
+    - 'DeviceName                          :    160 :"Linux Mobile"'
+    - 'OperatingSystemClass                :    160 :"Mobile"'
+    - 'OperatingSystemName                 :    160 :"Ubuntu Touch"'
+    - 'OperatingSystemVersion              :    160 :agent.(1)product.(1)comments.(2)entry.(1)product.(1)name="Ubuntu"^.version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="hp-tablet"'
+    extract:
+    - 'DeviceClass                         :    360 :"Tablet"'
+    - 'DeviceName                          :    360 :"HP TouchPad"'
+    - 'DeviceBrand                         :    360 :"HP"'
+    - 'DeviceVersion                       :    360 :agent.product.name="TouchPad"^.version'
+

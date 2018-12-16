@@ -1,0 +1,128 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+
+- set:
+    name: 'BadGeckoNames'
+    values:
+    - 'anonymized'
+    - 'owasmime'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   2000 :"Browser"'
+    - 'LayoutEngineName                    :   2000 :"Gecko"'
+    - 'LayoutEngineVersion                 :   2000 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+    - 'LayoutEngineBuild                   :   2000 :agent.(2-5)product.name="Gecko"^.version'
+    - 'AgentClass                          :   1995 :"Browser"'
+    - 'AgentName                           :   1995 :"Gecko"'
+    - 'AgentVersion                        :   1995 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>'
+    require:
+    - 'IsNull[@Gecko.name?BadGeckoNames]'
+    extract:
+    - 'AgentClass                          :   2000 :"Browser"'
+    - 'AgentName                           :   2000 :@Gecko.name'
+    - 'AgentVersion                        :   2000 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>>'
+    require:
+    - 'IsNull[@Gecko.name[-1]?BadGeckoNames]'
+    extract:
+    - 'AgentClass                          :   2001 :"Browser"'
+    - 'AgentName                           :   2001 :@Gecko.name'
+    - 'AgentVersion                        :   2001 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>'
+    require:
+    - 'agent.(3-6)product.name[2]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2002 :"Browser"'
+    - 'AgentName                           :   2002 :@Gecko.name[2]="Firefox"'
+    - 'AgentVersion                        :   2002 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>'
+    require:
+    - 'agent.(3-6)product.name[3]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2002 :"Browser"'
+    - 'AgentName                           :   2002 :@Gecko.name[3]="Firefox"'
+    - 'AgentVersion                        :   2002 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>>'
+    require:
+    - 'agent.(4-7)product.name[2]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2003 :"Browser"'
+    - 'AgentName                           :   2003 :@Gecko.name[2]="Firefox"'
+    - 'AgentVersion                        :   2003 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.(2-5)product.name="Gecko"^>>'
+    require:
+    - 'agent.(4-7)product.name[3]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2003 :"Browser"'
+    - 'AgentName                           :   2003 :@Gecko.name[3]="Firefox"'
+    - 'AgentVersion                        :   2003 :@Gecko.version'
+
+- matcher:
+    variable:
+    - 'Browser: agent.(2-5)product.name="Gecko"^>'
+    require:
+    - 'agent.product.name="Firefox"' # Performance trick
+    - '@Browser>.name="Firefox"'
+    - 'IsNull[@Browser.name?OSPatterns]'
+    - 'IsNull[@Browser.name~"toolbar"]'
+    extract:
+    - 'AgentClass                          :   2005 :"Browser"'
+    - 'AgentName                           :   2005 :@Browser.name'
+    - 'AgentVersion                        :   2005 :@Browser.version'
+
+
+    # In some obscure cases we have a parse problem that sends everything inside a comment block
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   1900 :"Browser"'
+    - 'LayoutEngineName                    :   1900 :"Gecko"'
+    - 'LayoutEngineVersion                 :   1900 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+    - 'LayoutEngineBuild                   :   1900 :agent.product.comments.entry.product.name="Gecko"^.version'
+    - 'AgentClass                          :   1895 :"Browser"'
+    - 'AgentName                           :   1895 :"Gecko"'
+    - 'AgentVersion                        :   1895 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+
+- matcher:
+    variable:
+    - 'Gecko: agent.product.comments.entry.product.name="Gecko"^>'
+    extract:
+    - 'AgentClass                          :   1900 :"Browser"'
+    - 'AgentName                           :   1900 :@Gecko.name'
+    - 'AgentVersion                        :   1900 :@Gecko.version'
+
+#

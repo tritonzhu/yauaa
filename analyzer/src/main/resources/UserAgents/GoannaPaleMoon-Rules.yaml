@@ -1,0 +1,112 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+
+- set:
+    name: 'BadGoannaNames'
+    values:
+    - 'anonymized'
+    - 'owasmime'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   2010 :"Browser"'
+    - 'LayoutEngineName                    :   2010 :"Goanna"'
+    - 'LayoutEngineVersion                 :   2010 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+    - 'LayoutEngineBuild                   :   2010 :agent.(2-5)product.name="Goanna"^.version'
+    - 'AgentClass                          :   1996 :"Browser"'
+    - 'AgentName                           :   1996 :"Goanna"'
+    - 'AgentVersion                        :   1996 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>'
+    require:
+    - 'IsNull[@Goanna.name?BadGoannaNames]'
+    extract:
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :@Goanna.name'
+    - 'AgentVersion                        :   2010 :@Goanna.version'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>>'
+    require:
+    - 'IsNull[@Goanna.name[-1]?BadGoannaNames]'
+    extract:
+    - 'AgentClass                          :   2011 :"Browser"'
+    - 'AgentName                           :   2011 :@Goanna.name'
+    - 'AgentVersion                        :   2011 :@Goanna.version'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>'
+    require:
+    - 'agent.(3-6)product.name[2]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2012 :"Browser"'
+    - 'AgentName                           :   2012 :@Goanna.name[2]="Firefox"'
+    - 'AgentVersion                        :   2012 :@Goanna.version'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>'
+    require:
+    - 'agent.(3-6)product.name[3]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2012 :"Browser"'
+    - 'AgentName                           :   2012 :@Goanna.name[3]="Firefox"'
+    - 'AgentVersion                        :   2012 :@Goanna.version'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>>'
+    require:
+    - 'agent.(4-7)product.name[2]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2013 :"Browser"'
+    - 'AgentName                           :   2013 :@Goanna.name[2]="Firefox"'
+    - 'AgentVersion                        :   2013 :@Goanna.version'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.(2-5)product.name="Goanna"^>>'
+    require:
+    - 'agent.(4-7)product.name[3]="Firefox"' # Performance trick
+    extract:
+    - 'AgentClass                          :   2013 :"Browser"'
+    - 'AgentName                           :   2013 :@Goanna.name[3]="Firefox"'
+    - 'AgentVersion                        :   2013 :@Goanna.version'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   1901 :"Browser"'
+    - 'LayoutEngineName                    :   1901 :"Goanna"'
+    - 'LayoutEngineVersion                 :   1901 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+    - 'LayoutEngineBuild                   :   1901 :agent.product.comments.entry.product.name="Goanna"^.version'
+    - 'AgentClass                          :   1896 :"Browser"'
+    - 'AgentName                           :   1896 :"Goanna"'
+    - 'AgentVersion                        :   1896 :agent.(1)product.comments.entry.keyvalue.key="rv"^.value'
+
+- matcher:
+    variable:
+    - 'Goanna: agent.product.comments.entry.product.name="Goanna"^>'
+    extract:
+    - 'AgentClass                          :   1901 :"Browser"'
+    - 'AgentName                           :   1901 :@Goanna.name'
+    - 'AgentVersion                        :   1901 :@Goanna.version'
+

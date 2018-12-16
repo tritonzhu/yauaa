@@ -17,7 +17,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TARGETDIR=$(cd "${SCRIPTDIR}/../../../resources/UserAgents"; pwd)
 
 INPUT=WindowsPhone.csv
-OUTPUT="${TARGETDIR}/WindowsPhoneLookups.yaml"
+OUTPUT="${TARGETDIR}/WindowsPhone-Lookups.yaml"
 
 if [ "Generate.sh" -ot "${OUTPUT}" ]; then
     if [ "${INPUT}" -ot "${OUTPUT}" ]; then

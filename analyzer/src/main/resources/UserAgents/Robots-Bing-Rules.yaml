@@ -1,0 +1,282 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+
+config:
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"BingBot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :"Bingbot"'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)name="bingbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :"Bingbot"'
+    - 'AgentVersion                        :   3000 :agent.product.(1)name="bingbot"^.version'
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"BingBot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :"Bingbot"'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)comments.entry.product.(1)name="bingbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :"Bingbot"'
+    - 'AgentVersion                        :   3000 :agent.product.(1)comments.entry.product.(1)name="bingbot"^.version'
+
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"MsnBot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :agent.product.(1)name[1]="msnbot"@'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)name[1]="msnbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :agent.product.(1)name[1]="msnbot"@'
+    - 'AgentVersion                        :   3000 :agent.product.(1)name[1]="msnbot"^.version'
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"MsnBot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="msnbot"@'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="msnbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="msnbot"@'
+    - 'AgentVersion                        :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="msnbot"^.version'
+
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"Adidxbot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :agent.product.(1)name[1]="adidxbot"@'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)name[1]="adidxbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :agent.product.(1)name[1]="adidxbot"@'
+    - 'AgentVersion                        :   3000 :agent.product.(1)name[1]="adidxbot"^.version'
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"Adidxbot"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="adidxbot"@'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="adidxbot"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="adidxbot"@'
+    - 'AgentVersion                        :   3000 :agent.product.(1)comments.entry.product.(1)name[1]="adidxbot"^.version'
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"BingPreview"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :"BingPreview"'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)name="BingPreview"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :"BingPreview"'
+    - 'AgentVersion                        :   3000 :agent.product.(1)name="BingPreview"^.version'
+
+
+# There are cases where the 'bingpreview' is preceeded by 'like gecko'
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"BingPreview"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :"BingPreview"'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)name[3]="BingPreview"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :"BingPreview"'
+    - 'AgentVersion                        :   3000 :agent.product.(1)name[3]="BingPreview"^.version'
+
+- matcher:
+    extract:
+    - '__Set_ALL_Fields__                  :   2999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :   3000 :"Robot"'
+    - 'DeviceBrand                         :   3000 :"Microsoft"'
+    - 'DeviceName                          :   3000 :"BingPreview"'
+    - 'OperatingSystemClass                :   3000 :"Cloud"'
+    - 'OperatingSystemName                 :   3000 :"Microsoft Cloud"'
+    - 'OperatingSystemVersion              :   3000 :"Microsoft Azure"'
+    - 'OperatingSystemNameVersion          :   3000 :"Microsoft Azure"'
+    - 'LayoutEngineClass                   :   3000 :"Robot"'
+    - 'LayoutEngineName                    :   3000 :"BingPreview"'
+    - 'LayoutEngineVersion                 :   3000 :agent.product.(1)comments.entry.product.(1)name="BingPreview"^.version'
+    - 'AgentClass                          :   3000 :"Robot"'
+    - 'AgentName                           :   3000 :"BingPreview"'
+    - 'AgentVersion                        :   3000 :agent.product.(1)comments.entry.product.(1)name="BingPreview"^.version'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingbot"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingbot"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Android"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingbot"'
+    - 'agent.product.(1)comments.entry.(1)text="iPhone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)text="iPhone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Android"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)text="iPhone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Android"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name[3]="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)text="iPhone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name[3]="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name[3]="bingpreview"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Android"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="Adidxbot"'
+    - 'agent.product.(1)comments.entry.(1)text="iPhone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="Adidxbot"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.(1)name="Adidxbot"'
+    - 'agent.product.(1)comments.entry.(1)product.name="Android"'
+    extract:
+    - 'DeviceClass                         :   3001 :"Robot Mobile"'
+

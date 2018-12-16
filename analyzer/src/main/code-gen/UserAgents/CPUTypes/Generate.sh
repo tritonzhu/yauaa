@@ -17,7 +17,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TARGETDIR=$(cd "${SCRIPTDIR}/../../../resources/UserAgents"; pwd)
 
 INPUT=CPUTypes.csv
-OUTPUT="${TARGETDIR}/CPUTypes.yaml"
+OUTPUT="${TARGETDIR}/CPUTypes-Rules.yaml"
 
 if [ "Generate.sh" -ot "${OUTPUT}" ]; then
     if [ "${INPUT}" -ot "${OUTPUT}" ]; then

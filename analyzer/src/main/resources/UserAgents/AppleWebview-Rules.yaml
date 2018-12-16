@@ -1,0 +1,48 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+#http://artsy.github.io/blog/2012/10/18/the-perils-of-ios-user-agent-sniffing/
+# iOS Safari
+- matcher:
+    require:
+    - 'agent.product.(1)name="Mobile"'
+    - 'IsNull[agent.product.(1)name="Mobile"^>]'
+    - 'IsNull[agent.product.(1)name="Safari"]'
+    extract:
+    - 'AgentClass                          :     50 :"Browser Webview"'
+    - 'AgentName                           :     50 :"UIWebView"'
+    - 'AgentVersion                        :     50 :agent.product.(1)name="AppleWebKit"^.version'
+    - 'WebviewAppName                      :      1 :"Unknown Webview App"'
+    - 'WebviewAppVersion                   :      1 :"??"'
+
+# UIWebView --> No "Safari" at the end
+# Facebook UIWebView
+#https://mobiforge.com/research-analysis/webviews-and-user-agent-strings
+#Twitter/Tweetbot for iOS User-Agent string
+#Facebook for iOS User-Agent string
+# GSA = Google Search App
+# This one doesn't follow the normal pattern for a webview
+- matcher:
+    require:
+    - 'agent.product.(1)name="Mobile"'
+    extract:
+    - 'AgentClass                          :     41 :"Browser Webview"'
+    - 'AgentName                           :     41 :"UIWebView"'
+    - 'AgentVersion                        :     41 :agent.product.(1)name="AppleWebKit"^.version'
+    - 'WebviewAppName                      :      1 :"Google Search App"'
+    - 'WebviewAppVersion                   :      1 :agent.product.(1)name="GSA"^.version'
+

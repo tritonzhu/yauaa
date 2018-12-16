@@ -1,0 +1,172 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    100 :"Phone"'
+    - 'DeviceName                          :    100 :"Generic Windows Phone"'
+    - 'OperatingSystemClass                :    600 :"Mobile"'
+    - 'OperatingSystemName                 :    600 :"Windows Phone"'
+    - 'OperatingSystemVersion              :    600 :agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"^.version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Microsoft"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Microsoft"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Nokia"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Nokia"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Acer"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Acer"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"HTC"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="HTC"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Huawei"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Huawei"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Samsung"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Samsung"^>'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.name[-2]="Windows Phone"'
+    extract:
+    - 'DeviceClass                         :    200 :"Phone"'
+    - 'DeviceBrand                         :    200 :"Archos"'
+    - 'DeviceName                          :    400 :agent.(1)product.(1)comments.entry.text="Archos"^>'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    199 :"Phone"'
+    - 'DeviceBrand                         :    199 :"Nokia"'
+    - 'DeviceName                          :    399 :agent.(1)product.(1)comments.entry[-1]="Lumia"@'
+
+# =================================================================
+
+# https://msdn.microsoft.com/en-us/ie/hh920767(v=vs.94)
+#     says Windows RT is tagged as "Windows NT 6.2; ARM"
+# Windows RT is an OS that was only used on a handful of tablet class devices.
+# Many cases I found so far tag Windows Phone 8 as "Windows NT 6.2; ARM" ...
+# According to these two (Dutch) Wikipedia pages
+#    https://nl.wikipedia.org/wiki/Windows_NT_6.2 --> Windows {8, RT 8, Phone 8}
+#    https://nl.wikipedia.org/wiki/Windows_NT_6.3 --> Windows {8.1, RT 8.1, Phone 8.1}
+# Since almost nobody ever used Windows RT I'm choosing to give the analysis result that is different from the specifications.
+# Hence I choose them to be "Phones"
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceClass                         :    199 :"Phone"'
+    - 'DeviceName                          :    199 :"Windows Phone"'
+    - 'DeviceCpuBits                       :      1 :"32"'
+    - 'OperatingSystemClass                :    199 :"Mobile"'
+    - 'OperatingSystemName                 :    199 :LookUp[WindowsPhoneOSName;agent.(1)product.comments.entry.product]'
+    - 'OperatingSystemVersion              :    199 :LookUp[WindowsPhoneOSVersion;agent.(1)product.comments.entry.product]'
+    - 'OperatingSystemNameVersion          :    199 :LookUp[WindowsPhoneOSNameVersion;agent.(1)product.comments.entry.product]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceCpuBits                       :    199 :LookUp[WindowsPhoneOSCpuBits;agent.(1)product.comments.entry.product]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceClass                         :    199 :"Phone"'
+    - 'DeviceName                          :    199 :"Windows Phone"'
+    - 'DeviceCpuBits                       :      1 :"32"'
+    - 'OperatingSystemClass                :    199 :"Mobile"'
+    - 'OperatingSystemName                 :    199 :LookUp[WindowsPhoneOSName;agent.(1)product.comments.entry.text]'
+    - 'OperatingSystemVersion              :    199 :LookUp[WindowsPhoneOSVersion;agent.(1)product.comments.entry.text]'
+    - 'OperatingSystemNameVersion          :    199 :LookUp[WindowsPhoneOSNameVersion;agent.(1)product.comments.entry.text]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceCpuBits                       :    199 :LookUp[WindowsPhoneOSCpuBits;agent.(1)product.comments.entry.text]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceClass                         :    199 :"Phone"'
+    - 'DeviceName                          :    199 :"Windows Phone"'
+    - 'DeviceCpuBits                       :      1 :"32"'
+    - 'OperatingSystemClass                :    199 :"Mobile"'
+    - 'OperatingSystemName                 :    199 :LookUp[WindowsPhoneOSName;agent.product]'
+    - 'OperatingSystemVersion              :    199 :LookUp[WindowsPhoneOSVersion;agent.product]'
+    - 'OperatingSystemNameVersion          :    199 :LookUp[WindowsPhoneOSNameVersion;agent.product]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceCpuBits                       :    199 :LookUp[WindowsPhoneOSCpuBits;agent.product]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceClass                         :    199 :"Phone"'
+    - 'DeviceName                          :    199 :"Windows Phone"'
+    - 'DeviceCpuBits                       :      1 :"32"'
+    - 'OperatingSystemClass                :    199 :"Mobile"'
+    - 'OperatingSystemName                 :    199 :LookUp[WindowsPhoneOSName;agent.product.text]'
+    - 'OperatingSystemVersion              :    199 :LookUp[WindowsPhoneOSVersion;agent.product.text]'
+    - 'OperatingSystemNameVersion          :    199 :LookUp[WindowsPhoneOSNameVersion;agent.product.text]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.comments.entry="ARM"'
+    extract:
+    - 'DeviceCpuBits                       :    199 :LookUp[WindowsPhoneOSCpuBits;agent.product.text]'
+

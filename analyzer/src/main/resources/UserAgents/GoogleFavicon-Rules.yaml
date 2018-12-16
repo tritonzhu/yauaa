@@ -1,0 +1,47 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# http://webmasters.stackexchange.com/questions/100434/where-does-google-favicon-useragent-come-from
+
+config:
+
+- matcher:
+    require:
+    - 'agent.product.name="Chrome"'
+    - 'agent.text="Google Favicon"'
+    extract:
+    - 'AgentName                           :  10000 :"Google Favicon (Chrome)"'
+
+- matcher:
+    require:
+    - 'agent.product.name="Firefox"'
+    - 'agent.text="Google Favicon"'
+    extract:
+    - 'AgentName                           :  10000 :"Google Favicon (Firefox)"'
+
+
+- matcher:
+    require:
+    - 'agent.(1)text="Google Favicon"'
+    extract:
+    - 'DeviceClass                         :    100 :"Robot"'
+    - 'DeviceName                          :    100 :"Google"'
+    - 'DeviceBrand                         :    100 :"Google"'
+    - 'AgentClass                          :    100 :"Cloud Application"'
+    - 'AgentName                           :  20000 :"Google Favicon (Bare)"'
+    - 'AgentVersion                        :    100 :"??"'
+

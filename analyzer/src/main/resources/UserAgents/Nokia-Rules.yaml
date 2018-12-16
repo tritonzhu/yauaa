@@ -1,0 +1,246 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+config:
+
+# Older Nokia devices
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    300 :"Phone"'
+    - 'DeviceBrand                         :    300 :"Nokia"'
+    - 'DeviceName                          :    300 :agent.(1)product.(1)comments.(1-2)entry="MeeGo">.text'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    300 :"Phone"'
+    - 'DeviceBrand                         :    300 :"Nokia"'
+    - 'DeviceName                          :    300 :agent.(1)product.(1)comments.(1-2)entry="MeeGo">.product.name'
+    - 'DeviceVersion                       :    300 :agent.(1)product.(1)comments.(1-2)entry="MeeGo">.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"MeeGo"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+# Series30Plus
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series30Plus">.text'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series30Plus">.product.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series30Plus">.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series30Plus"^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series30Plus"^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series30Plus">.text'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series30Plus">.product.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series30Plus">.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series30Plus"^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series30Plus"^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+# Series40
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series40">.text'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series40">.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series40">.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series40"^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series40"^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series40">.text'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series40"^>.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series40"^>.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series40"^^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series40"^^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+# Series60
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series60">.text'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series60"^>.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series60"^>.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series60"^^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)text="Series60"^^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series60"^>.text'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    355 :"Phone"'
+    - 'DeviceBrand                         :    355 :"Nokia"'
+    - 'DeviceName                          :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series60"^>.name'
+    - 'DeviceVersion                       :    355 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series60"^>.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    350 :"Phone"'
+    - 'DeviceBrand                         :    350 :"Nokia"'
+    - 'DeviceName                          :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series60"^^>.product.name'
+    - 'DeviceVersion                       :    350 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Series60"^^>.product.version'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Symbian"'
+    - 'OperatingSystemVersion              :     10 :"??"'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Symbian"'
+    extract:
+    - 'DeviceClass                         :    360 :"Phone"'
+    - 'DeviceBrand                         :    360 :"Nokia"'
+    - 'DeviceName                          :    360 :agent.(1)product.(1)name!="Mozilla"'
+    - 'DeviceVersion                       :    360 :agent.(1)product.(1)version'
+    - 'OperatingSystemClass                :    310 :"Mobile"'
+    - 'OperatingSystemName                 :    310 :"SymbianOS"'
+    - 'OperatingSystemVersion              :    310 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="Symbian"^.version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.(1-2)entry.(1)product.name="SymbianOS"'
+    extract:
+    - 'DeviceClass                         :    360 :"Phone"'
+    - 'DeviceBrand                         :    360 :"Nokia"'
+    - 'DeviceName                          :    360 :agent.(1)product.(1)name!="Mozilla"'
+    - 'DeviceVersion                       :    360 :agent.(1)product.(1)version'
+    - 'OperatingSystemClass                :    310 :"Mobile"'
+    - 'OperatingSystemName                 :    310 :"SymbianOS"'
+    - 'OperatingSystemVersion              :    310 :agent.(1)product.(1)comments.(1-2)entry.(1)product.name="SymbianOS"^.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    360 :"Phone"'
+    - 'DeviceBrand                         :    360 :"Nokia"'
+    - 'DeviceName                          :    360 :agent.product.(1)name="Maemo Browser"^.(3)version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)version="SymbianOS"'
+    extract:
+    - 'DeviceClass                         :    360 :"Phone"'
+    - 'DeviceBrand                         :    360 :"Nokia"'
+    - 'DeviceName                          :    360 :agent.(1)product.(1)name'
+    - 'OperatingSystemClass                :    310 :"Mobile"'
+    - 'OperatingSystemName                 :    310 :"SymbianOS"'
+    - 'OperatingSystemVersion              :    310 :agent.(1)product.(2)version'
+

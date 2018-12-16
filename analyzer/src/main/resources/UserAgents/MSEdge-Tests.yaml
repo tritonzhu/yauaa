@@ -1,0 +1,567 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# https://msdn.microsoft.com/en-us/library/ms537503(v=vs.85).aspx
+
+config:
+
+# Edge (IE >= 12):
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '12'
+      LayoutEngineVersionMajor             : '12'
+      LayoutEngineNameVersion              : 'EdgeHTML 12'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 12'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '20.??'
+      AgentVersionMajor                    : '20'
+      AgentNameVersion                     : 'Edge 20.??'
+      AgentNameVersionMajor                : 'Edge 20'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; NOKIA; Lumia 928) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Nokia Lumia 928'
+      DeviceBrand                          : 'Nokia'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Phone'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows Phone 10.0'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '25.10586'
+      AgentVersionMajor                    : '25'
+      AgentNameVersion                     : 'Edge 25.10586'
+      AgentNameVersionMajor                : 'Edge 25'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586'
+    expected:
+      DeviceClass                          : 'Game Console'
+      DeviceName                           : 'Microsoft Xbox'
+      DeviceBrand                          : 'Microsoft'
+      DeviceVersion                        : 'Xbox One'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Phone'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows Phone 10.0'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '25.10586'
+      AgentVersionMajor                    : '25'
+      AgentNameVersion                     : 'Edge 25.10586'
+      AgentNameVersionMajor                : 'Edge 25'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; NOKIA; Lumia 730 Dual SIM) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Nokia Lumia 730 Dual SIM'
+      DeviceBrand                          : 'Nokia'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Phone'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows Phone 10.0'
+      OperatingSystemVersionBuild          : '10166'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '12'
+      LayoutEngineVersionMajor             : '12'
+      LayoutEngineNameVersion              : 'EdgeHTML 12'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 12'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '20.10166'
+      AgentVersionMajor                    : '20'
+      AgentNameVersion                     : 'Edge 20.10166'
+      AgentNameVersionMajor                : 'Edge 20'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; RM-1092) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14295'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Microsoft RM-1092'
+      DeviceBrand                          : 'Microsoft'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Phone'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows Phone 10.0'
+      OperatingSystemVersionBuild          : '14295'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '14'
+      LayoutEngineVersionMajor             : '14'
+      LayoutEngineNameVersion              : 'EdgeHTML 14'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 14'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '34.14295'
+      AgentVersionMajor                    : '34'
+      AgentNameVersion                     : 'Edge 34.14295'
+      AgentNameVersionMajor                : 'Edge 34'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.14257'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpuBits                        : '32'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '14257'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '28.14257'
+      AgentVersionMajor                    : '28'
+      AgentNameVersion                     : 'Edge 28.14257'
+      AgentNameVersionMajor                : 'Edge 28'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; ARM) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/14.14291'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Windows Phone'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'ARM'
+      DeviceCpuBits                        : '32'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Mobile'
+      OperatingSystemVersion               : '10'
+      OperatingSystemNameVersion           : 'Windows 10 Mobile'
+      OperatingSystemVersionBuild          : '14291'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '14'
+      LayoutEngineVersionMajor             : '14'
+      LayoutEngineNameVersion              : 'EdgeHTML 14'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 14'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '34.14291'
+      AgentVersionMajor                    : '34'
+      AgentNameVersion                     : 'Edge 34.14291'
+      AgentNameVersionMajor                : 'Edge 34'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; ARM; Lumia 640 LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586'
+    expected:
+      # WTF: Desktop OS on Mobile phone ?!?!?!
+      # http://www.gsmarena.com/microsoft_lumia_640_lte-7055.php
+      # OS: Microsoft Windows Phone 8.1, upgradable to Microsoft Windows 10
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Nokia Lumia 640 LTE'
+      DeviceBrand                          : 'Nokia'
+      DeviceCpu                            : 'ARM'
+      DeviceCpuBits                        : '32'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Mobile'
+      OperatingSystemVersion               : '10'
+      OperatingSystemNameVersion           : 'Windows 10 Mobile'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '25.10586'
+      AgentVersionMajor                    : '25'
+      AgentNameVersion                     : 'Edge 25.10586'
+      AgentNameVersionMajor                : 'Edge 25'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; ARM; Lumia 640 LTE Dual SIM) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586'
+    expected:
+      # http://www.gsmarena.com/microsoft_lumia_640_lte-7055.php
+      # OS: Microsoft Windows Phone 8.1, upgradable to Microsoft Windows 10
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Nokia Lumia 640 LTE Dual SIM'
+      DeviceBrand                          : 'Nokia'
+      DeviceCpu                            : 'ARM'
+      DeviceCpuBits                        : '32'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Mobile'
+      OperatingSystemVersion               : '10'
+      OperatingSystemNameVersion           : 'Windows 10 Mobile'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '25.10586'
+      AgentVersionMajor                    : '25'
+      AgentNameVersion                     : 'Edge 25.10586'
+      AgentNameVersionMajor                : 'Edge 25'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; WebView/3.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240'
+    expected:
+      #TODO (Low prio): What is WebView/3.0??
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpuBits                        : '32'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '10240'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '12'
+      LayoutEngineVersionMajor             : '12'
+      LayoutEngineNameVersion              : 'EdgeHTML 12'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 12'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '20.10240'
+      AgentVersionMajor                    : '20'
+      AgentNameVersion                     : 'Edge 20.10240'
+      AgentNameVersionMajor                : 'Edge 20'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2351.3 Safari/537.36 Edge/12.0'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '12'
+      LayoutEngineVersionMajor             : '12'
+      LayoutEngineNameVersion              : 'EdgeHTML 12'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 12'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '20.??'
+      AgentVersionMajor                    : '20'
+      AgentNameVersion                     : 'Edge 20.??'
+      AgentNameVersionMajor                : 'Edge 20'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586,gzip(gfe)'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '25.10586'
+      AgentVersionMajor                    : '25'
+      AgentNameVersion                     : 'Edge 25.10586'
+      AgentNameVersionMajor                : 'Edge 25'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/14.14279'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '14279'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '14'
+      LayoutEngineVersionMajor             : '14'
+      LayoutEngineNameVersion              : 'EdgeHTML 14'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 14'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '31.14279'
+      AgentVersionMajor                    : '31'
+      AgentNameVersion                     : 'Edge 31.14279'
+      AgentNameVersionMajor                : 'Edge 31'
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '17763'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '18'
+      LayoutEngineVersionMajor             : '18'
+      LayoutEngineNameVersion              : 'EdgeHTML 18'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 18'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '44.17763'
+      AgentVersionMajor                    : '44'
+      AgentNameVersion                     : 'Edge 44.17763'
+      AgentNameVersionMajor                : 'Edge 44'
+
+
+# Deliberate error: An Edge version tag where the OS build is not in the lookup
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.666'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '666'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '18'
+      LayoutEngineVersionMajor             : '18'
+      LayoutEngineNameVersion              : 'EdgeHTML 18'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 18'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '44.??'
+      AgentVersionMajor                    : '44'
+      AgentNameVersion                     : 'Edge 44.??'
+      AgentNameVersionMajor                : 'Edge 44'
+
+# Deliberate error: An Edge version tag where the major version is not in the lookup
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/666.777'
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows 10.0'
+      OperatingSystemVersionBuild          : '777'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '666'
+      LayoutEngineVersionMajor             : '666'
+      LayoutEngineNameVersion              : 'EdgeHTML 666'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 666'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '??'
+      AgentVersionMajor                    : '??'
+      AgentNameVersion                     : 'Edge ??'
+      AgentNameVersionMajor                : 'Edge ??'
+
+# =================================================
+# Edge for Android & iOS
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F27M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.145 Mobile Safari/537.36 EdgA/41.0.0.1136'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Google Nexus 6'
+      DeviceBrand                          : 'Google'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '7.1.1'
+      OperatingSystemNameVersion           : 'Android 7.1.1'
+      OperatingSystemVersionBuild          : 'N6F27M'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'Blink'
+      LayoutEngineVersion                  : '58.0'
+      LayoutEngineVersionMajor             : '58'
+      LayoutEngineNameVersion              : 'Blink 58.0'
+      LayoutEngineNameVersionMajor         : 'Blink 58'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '41.0.0.1136'
+      AgentVersionMajor                    : '41'
+      AgentNameVersion                     : 'Edge 41.0.0.1136'
+      AgentNameVersionMajor                : 'Edge 41'
+
+# Example from specs page
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.0 Mobile Safari/537.36 EdgA/41.1.35.1'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Google Pixel XL'
+      DeviceBrand                          : 'Google'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Android'
+      OperatingSystemVersion               : '8.0'
+      OperatingSystemNameVersion           : 'Android 8.0'
+      OperatingSystemVersionBuild          : 'OPP3.170518.006'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'Blink'
+      LayoutEngineVersion                  : '58.0'
+      LayoutEngineVersionMajor             : '58'
+      LayoutEngineNameVersion              : 'Blink 58.0'
+      LayoutEngineNameVersionMajor         : 'Blink 58'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '41.1.35.1'
+      AgentVersionMajor                    : '41'
+      AgentNameVersion                     : 'Edge 41.1.35.1'
+      AgentNameVersionMajor                : 'Edge 41'
+
+# Example from specs page
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89 Safari/603.2.4 EdgiOS/41.1.35.1'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Apple iPhone'
+      DeviceBrand                          : 'Apple'
+      DeviceFirmwareVersion                : '14F89'
+      DeviceVersion                        : 'iPhone'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'iOS'
+      OperatingSystemVersion               : '10.3.2'
+      OperatingSystemNameVersion           : 'iOS 10.3.2'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '603.2.4'
+      LayoutEngineVersionMajor             : '603'
+      LayoutEngineNameVersion              : 'AppleWebKit 603.2.4'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 603'
+      AgentClass                           : 'Browser'
+      AgentName                            : 'Edge'
+      AgentVersion                         : '41.1.35.1'
+      AgentVersionMajor                    : '41'
+      AgentNameVersion                     : 'Edge 41.1.35.1'
+      AgentNameVersionMajor                : 'Edge 41'
+
+# ===============================================
+
+# MSAppHost means webview
+
+- test:
+    input:
+      user_agent_string: 'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; MSAppHost/3.0; Microsoft; Virtual) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586'
+    expected:
+      DeviceClass                          : 'Phone'
+      DeviceName                           : 'Microsoft Virtual'
+      DeviceBrand                          : 'Microsoft'
+      OperatingSystemClass                 : 'Mobile'
+      OperatingSystemName                  : 'Windows Phone'
+      OperatingSystemVersion               : '10.0'
+      OperatingSystemNameVersion           : 'Windows Phone 10.0'
+      OperatingSystemVersionBuild          : '10586'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'EdgeHTML'
+      LayoutEngineVersion                  : '13'
+      LayoutEngineVersionMajor             : '13'
+      LayoutEngineNameVersion              : 'EdgeHTML 13'
+      LayoutEngineNameVersionMajor         : 'EdgeHTML 13'
+      AgentClass                           : 'Browser Webview'
+      AgentName                            : 'Edge Webview'
+      AgentVersion                         : '3.0'
+      AgentVersionMajor                    : '3'
+      AgentNameVersion                     : 'Edge Webview 3.0'
+      AgentNameVersionMajor                : 'Edge Webview 3'
+      WebviewAppName                       : 'Unknown Webview App'
+      WebviewAppNameVersionMajor           : 'Unknown Webview App ??'
+      WebviewAppVersion                    : '??'
+      WebviewAppVersionMajor               : '??'
+
+

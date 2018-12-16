@@ -17,7 +17,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TARGETDIR=$(cd "${SCRIPTDIR}/../../../resources/UserAgents"; pwd)
 
 INPUT=WindowsOEMCodes.csv
-OUTPUT="${TARGETDIR}/WindowsOEMCodes.yaml"
+OUTPUT="${TARGETDIR}/WindowsOEMCodes-Rules.yaml"
 
 if [ "Generate.sh" -ot "${OUTPUT}" ]; then
     if [ "${INPUT}" -ot "${OUTPUT}" ]; then

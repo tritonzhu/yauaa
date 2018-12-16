@@ -1,0 +1,243 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+
+config:
+
+# Hybrid Broadcast Broadband TV
+
+#According to HbbTV specification http://www.etsi.org/deliver/etsi_ts/102700_102799/102796/01.01.01_60/ts_102796v010101p.pdf the User-Agent shall include:
+#HbbTV/1.1.1 (&lt;capabilities&gt;; [&lt;vendorName&gt;]; [&lt;modelName&gt;]; [&lt;softwareVersion&gt;]; [&lt;hardwareVersion&gt;]; &lt;reserved&gt;)
+
+#7.3.2.4 HTTP User-Agent header
+#All outgoing HTTP requests made on behalf of an Hybrid Broadcast Broadband TV application shall include a
+#User-Agent header using the syntax described in this clause.
+#The User-Agent header shall include:
+#HbbTV/1.1.1 (&lt;capabilities&gt;; [&lt;vendorName&gt;]; [&lt;modelName&gt;]; [&lt;softwareVersion&gt;];
+#[&lt;hardwareVersion&gt;]; &lt;reserved&gt;)
+#Where:
+#• The &lt;capabilities&gt; field consists of zero or more concatenated Hybrid Broadcast Broadband TV option
+#strings as defined in clause 10.2.4.
+#• The &lt;vendorName&gt;, &lt;modelName&gt;, &lt;softwareVersion&gt; and &lt;hardwareVersion&gt; fields are the same as the one
+#defined in the application/oipfRemoteManagement object in the OIPF DAE specification [2] and are
+#optional.
+#• The &lt;reserved&gt; field is reserved for future extensions.
+#
+#10.2.4 Hybrid Broadcast Broadband TV option strings
+#The strings defined in this clause shall be used to indicate which options are supported by a terminal. They shall be used
+#in the HTTP User-Agent header for applications data retrieval through HTTP and as parameters of a JavaScript API to
+#dynamically query the options supported by the terminal.
+#NOTE: Some of the strings defined in the clause intentionally match with the "UI Profile Name Fragment" strings
+#defined in the OIPF DAE specification [2].
+#Table 16: Hybrid Broadcast Broadband TV Option Strings
+#Option string Meaning
+#"+DL" Support for file download feature
+#"+PVR" Support for PVR feature
+#"+RTSP" Support for RTSP streaming feature
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"'
+    extract:
+    - 'DeviceClass                         :   1000 :"TV"'
+    - 'DeviceBrand                         :    101 :"Unspecified TV"'
+    - 'DeviceName                          :    101 :"Unspecified TV"'
+    - 'OperatingSystemClass                :   1000 :"Embedded"'
+    - 'OperatingSystemName                 :      1 :"Proprietary"'
+
+- matcher:
+    extract:
+    - 'DeviceBrand                         :   1000 :NormalizeBrand[agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"^.(1)comments.(2)entry!=""]'
+
+- matcher:
+    extract:
+    - 'DeviceName                          :   1000 :agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"^.(1)comments.(3)entry!=""'
+
+- matcher:
+    extract:
+    - 'OperatingSystemVersion              :   1000 :agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"^.(1)comments.(4)entry!=""'
+
+- matcher:
+    extract:
+    - 'OperatingSystemName                 :   1001 :agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"^.(1)comments.(4)entry.product.name'
+    - 'OperatingSystemVersion              :   1001 :agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"^.(1)comments.(4)entry.product.version'
+
+# -----------------
+- matcher:
+    require:
+    - 'agent.product.(1)name="HbbTV"'
+    extract:
+    - 'DeviceClass                         :   1000 :"TV"'
+    - 'DeviceBrand                         :    101 :"Unspecified TV"'
+    - 'DeviceName                          :    101 :"Unspecified TV"'
+    - 'OperatingSystemClass                :   1000 :"Embedded"'
+    - 'OperatingSystemName                 :      1 :"Proprietary"'
+
+- matcher:
+    extract:
+    - 'DeviceBrand                         :   1000 :NormalizeBrand[agent.product.(1)name="HbbTV"^.(1)comments.(2)entry!=""]'
+
+- matcher:
+    extract:
+    - 'DeviceName                          :   1000 :agent.product.(1)name="HbbTV"^.(1)comments.(3)entry!=""'
+
+- matcher:
+    extract:
+    - 'OperatingSystemVersion              :   1000 :agent.product.(1)name="HbbTV"^.(1)comments.(4)entry!=""'
+
+- matcher:
+    extract:
+    - 'OperatingSystemName                 :   1001 :agent.product.(1)name="HbbTV"^.(1)comments.(4)entry.product.name'
+    - 'OperatingSystemVersion              :   1001 :agent.product.(1)name="HbbTV"^.(1)comments.(4)entry.product.version'
+
+
+# -----------------
+
+- matcher:
+    variable:
+    - 'Language: agent.(1)product.(1)comments.(1-5)entry.(1-5)product.(1)name="Config"^.comments.(1-2)entry.(1)keyvalue.(1)key="L"^.text'
+    extract:
+    - 'AgentLanguageCode                   :     10 :LookUp[ISOLanguageCodes;@Language]'
+    - 'AgentLanguage                       :     10 :LookUp[ISOLanguageCodesName;@Language]'
+
+- matcher:
+    variable:
+    - 'Language: agent.(1)product.(1)comments.(1-5)entry.(1-5)product.(1)name="Config"^.comments.(1-2)entry.(1)keyvalue.(1)key="L"^.text'
+    extract:
+    - 'AgentLanguageCode                   :     11 :LookUp[ISOLanguageCodes3;@Language]'
+    - 'AgentLanguage                       :     11 :LookUp[ISOLanguageCodes3Name;@Language]'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1-3)product.(1)name="HbbTV"'
+    extract:
+    - 'DeviceBrand                         :    102 :"Loewe"'
+    - 'OperatingSystemName                 :   1000 :"LOH"'
+    - 'OperatingSystemVersion              :   1000 :agent.(1)product.(1)comments.entry.(1-3)product.(1)name="LOH"^.version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry="SMART-TV"'
+    extract:
+    - 'DeviceClass                         :    500 :"TV"'
+    - 'DeviceBrand                         :    500 :"Samsung"'
+    - 'DeviceName                          :    500 :"Smart TV"'
+    - 'OperatingSystemClass                :    500 :"Embedded"'
+    - 'OperatingSystemName                 :    500 :"Linux"'
+    - 'OperatingSystemVersion              :    500 :"SmartTV"'
+
+#My TV
+- matcher:
+    extract:
+    - 'OperatingSystemClass                :    501 :"Embedded"'
+    - 'OperatingSystemName                 :    501 :"Tizen"'
+    - 'OperatingSystemVersion              :    501 :agent.(1)product.(1)comments.entry.product.name="Tizen"^.version'
+
+
+- matcher:
+    extract:
+    - 'DeviceFirmwareVersion               :   1000 :agent.(1)product.(1)comments.(1-9)entry.product.(1)comments.(1-9)entry.product.(1)name="Firmware"^.version'
+
+- matcher:
+    extract:
+    - 'DeviceFirmwareVersion               :   1000 :agent.(1)product.(1)comments.(1-9)entry.product.(1)name="Firmware"^.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :     10 :"TV"'
+    - 'DeviceBrand                         :     10 :"Unspecified TV"'
+    - 'DeviceName                          :     10 :"Unspecified TV"'
+    - 'OperatingSystemClass                :   1000 :"Embedded"'
+    - 'OperatingSystemName                 :   1000 :"NETTV"'
+    - 'OperatingSystemVersion              :   1000 :agent.(1-3)product.(1)comments.(1-4)entry.product.(1)comments.(1-9)entry.product.(1)name="NETTV"^.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :     10 :"TV"'
+    - 'DeviceBrand                         :     10 :"Unspecified TV"'
+    - 'DeviceName                          :     10 :"Unspecified TV"'
+    - 'OperatingSystemClass                :   1000 :"Embedded"'
+    - 'OperatingSystemName                 :   1000 :"NETTV"'
+    - 'OperatingSystemVersion              :   1000 :agent.(1-3)product.(1)comments.(1-9)entry.product.(1)name="NETTV"^.version'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)product.(1)name="HbbTV"'
+    extract:
+    - 'DeviceClass                         :     10 :"TV"'
+    - 'DeviceBrand                         :     10 :"Unspecified TV"'
+    - 'DeviceName                          :     10 :"Unspecified TV"'
+    - 'OperatingSystemClass                :   1000 :"Embedded"'
+    - 'OperatingSystemName                 :      1 :"Proprietary"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)name="PhilipsWebKit"'
+    extract:
+    - 'DeviceClass                         :     20 :"TV"'
+    - 'DeviceBrand                         :     20 :"Philips"'
+    - 'DeviceName                          :    400 :"Unspecified TV"'
+
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.product.(1)name="NETTV"'
+    extract:
+    - 'OperatingSystemClass                :    100 :"Embedded"'
+    - 'DeviceClass                         :    100 :"TV"'
+    - 'DeviceName                          :    100 :"NetTV Device"'
+    - 'DeviceBrand                         :    100 :"Unknown"'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    500 :"TV"' # Well, it is really a video playback device...
+    - 'DeviceBrand                         :    500 :"Philips"'
+    - 'DeviceName                          :    500 :agent.product.(1)name[-2]="PHILIPS-AVM"^.comments.(2)entry.text'
+    - 'DeviceVersion                       :    500 :agent.product.(1)name[-2]="PHILIPS-AVM"^.version'
+
+- matcher:
+    extract:
+    - 'DeviceClass                         :    101 :"TV"'
+    - 'DeviceName                          :     50 :"SmartTV"'
+    - 'AgentClass                          :     50 :"Browser"'
+    - 'AgentName                           :     50 :"SmartTV"'
+    - 'AgentVersion                        :     50 :agent.product.name="SmartTV"^.version'
+
+
+# http://thadafinser.github.io/UserAgentParserComparison/v4/user-agent-detail/ce/71/ce710618-578f-4c06-bb21-240e261b3ca5.html
+# Apparently Panasonic Viera 2015 television
+#
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="Viera"'
+    extract:
+    - 'DeviceClass                         :    200 :"TV"'
+    - 'DeviceName                          :    200 :"Panasonic Viera"'
+    - 'DeviceBrand                         :    200 :"Panasonic"'
+
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="Model"'
+    extract:
+    - 'DeviceClass                         :      1 :"TV"'
+    - 'DeviceBrand                         :      1 :agent.(1)product.(1)version[1]'
+    - 'DeviceName                          :      1 :agent.(1)product.(1)version[2-]'
+    - 'AgentClass                          :     10 :"Browser"'
+    - 'AgentName                           :     10 :"Unknown"'
+    - 'AgentVersion                        :     10 :"??"'
+

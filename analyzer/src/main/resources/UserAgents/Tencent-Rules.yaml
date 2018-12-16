@@ -1,0 +1,149 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+# Testcases for the WeChat app
+
+# Quote from from https://github.com/browscap/browscap/issues/587
+#     MQQBrowser is Tencent's Cross Platform WebView Framework for WeChat & QQ inner WebView.
+
+# As indicated by https://github.com/pkptzx
+#    QQ Browser is Tencent's Browser product.
+#    so , Tencent's else product with Browser ,all base QQ Browser.
+#    if only have 'MQQBrowser' tag , then QQ Browser.
+#    if 'MicroMessenger' then WeChat App.
+#    if contain 'MQQBrowser' and 'QQ' then QQ app/windows client
+
+
+# ************************************************************
+# **** The useragent variations of this thing look like a big mess.
+# **** It looks like every system/version combination uses a different pattern in the useragent string
+# **** Sometimes with/without MQQBrowser, sometimes chrome webview, ...
+# So for this thing I force it to be a MobileApp (without webview, which may actually be wrong)
+
+- matcher:
+    require:
+    - 'agent.product.(1)name="Mobile MQQBrowser"'
+    - 'agent.product.(1)name="Safari"'
+    extract:
+    - 'DeviceClass                         :   1100 :"Phone"'
+
+- matcher:
+    require:
+    - 'IsNull[agent.product.(1)name="QQ"]'
+    - 'IsNull[agent.product.(1)name="MicroMessenger"]'
+    extract:
+    - 'AgentClass                          :  15000 :"Browser"'
+    - 'AgentName                           :  15000 :"QQ Browser"'
+    - 'AgentVersion                        :  15000 :agent.product.(1)name="MQQBrowser"^.version'
+    - 'WebviewAppName                      :     12 :"<<<null>>>"'
+    - 'WebviewAppNameVersionMajor          :     12 :"<<<null>>>"'
+    - 'WebviewAppVersion                   :     12 :"<<<null>>>"'
+    - 'WebviewAppVersionMajor              :     12 :"<<<null>>>"'
+
+- matcher:
+    extract:
+    - 'AgentClass                          :  15001 :"Browser"'
+    - 'AgentName                           :  15001 :"QQ Client"'
+    - 'AgentVersion                        :  15001 :agent.product.(1)name="QQ"^.version'
+    - 'WebviewAppName                      :     12 :"<<<null>>>"'
+    - 'WebviewAppNameVersionMajor          :     12 :"<<<null>>>"'
+    - 'WebviewAppVersion                   :     12 :"<<<null>>>"'
+    - 'WebviewAppVersionMajor              :     12 :"<<<null>>>"'
+
+# For the " V1_AND_SQ_6.5.5_410_YYB_D QQ/6.5.5.2880 " case.
+- matcher:
+    extract:
+    - 'AgentClass                          :  15002 :"Browser"'
+    - 'AgentName                           :  15002 :"QQ Client"'
+    - 'AgentVersion                        :  15002 :agent.product.(1)name}" QQ"^.version'
+    - 'WebviewAppName                      :     12 :"<<<null>>>"'
+    - 'WebviewAppNameVersionMajor          :     12 :"<<<null>>>"'
+    - 'WebviewAppVersion                   :     12 :"<<<null>>>"'
+    - 'WebviewAppVersionMajor              :     12 :"<<<null>>>"'
+
+- matcher:
+    extract:
+    - 'AgentClass                          :  15003 :"Mobile App"'
+    - 'AgentName                           :  15003 :"WeChat"'
+    - 'AgentVersion                        :  15003 :agent.product.(1)name="MicroMessenger"^.version'
+    - 'WebviewAppName                      :     12 :"<<<null>>>"'
+    - 'WebviewAppNameVersionMajor          :     12 :"<<<null>>>"'
+    - 'WebviewAppVersion                   :     12 :"<<<null>>>"'
+    - 'WebviewAppVersionMajor              :     12 :"<<<null>>>"'
+
+- matcher:
+    extract:
+    - 'NetworkType                         :      1 :agent.product.(1)name="NetType"^.version[1]'
+
+# This happens quite often:
+#       Core/UIWebView NetType/WIFI
+#       Core/UIWebView NetType/2G
+# The effect is that the parse tree gets a bit messy because everything is text (no numbers)
+- matcher:
+    variable:
+    - 'NetTypeProduct:agent.product[-3]="Core/UIWebView NetType"'
+    require:
+    - 'IsNull[@NetTypeProduct.(2)version]'
+    extract:
+    - 'NetworkType                         :      2 :@NetTypeProduct>'
+
+- matcher:
+    variable:
+    - 'NetTypeProduct:agent.product[-3]="Core/UIWebView NetType"'
+    extract:
+    - 'NetworkType                         :      3 :@NetTypeProduct.(2)version'
+
+
+# This happens quite often:
+#       NetType/WIFI Language/zh_CN
+#       NetType/cmnet Language/zh_CN
+# The effect is that the parse tree gets a bit messy because everything is text (no numbers)
+- matcher:
+    variable:
+    - 'AgentLanguageCode                   :agent.product[-3]="NetType/WIFI Language".(2)version'
+    extract:
+    - 'AgentLanguage                       :   3000 :LookUp[ISOLanguageCodesName;@AgentLanguageCode]'
+    - 'AgentLanguageCode                   :   3000 :LookUp[ISOLanguageCodes;@AgentLanguageCode]'
+
+- matcher:
+    variable:
+    - 'AgentLanguageCode                   :agent.product[-3]="NetType/WIFI Language">'
+    require:
+    - 'IsNull[@NetTypeProduct.(2)version]'
+    extract:
+    - 'AgentLanguage                       :   3000 :LookUp[ISOLanguageCodesName;@AgentLanguageCode]'
+    - 'AgentLanguageCode                   :   3000 :LookUp[ISOLanguageCodes;@AgentLanguageCode]'
+
+- matcher:
+    variable:
+    - 'AgentLanguageCode                   :agent.product[-3]="NetType/cmnet Language".(2)version'
+    extract:
+    - 'AgentLanguage                       :   3000 :LookUp[ISOLanguageCodesName;@AgentLanguageCode]'
+    - 'AgentLanguageCode                   :   3000 :LookUp[ISOLanguageCodes;@AgentLanguageCode]'
+
+- matcher:
+    variable:
+    - 'AgentLanguageCode                   :agent.product[-3]="NetType/cmnet Language">'
+    require:
+    - 'IsNull[@NetTypeProduct.(2)version]'
+    extract:
+    - 'AgentLanguage                       :   3000 :LookUp[ISOLanguageCodesName;@AgentLanguageCode]'
+    - 'AgentLanguageCode                   :   3000 :LookUp[ISOLanguageCodes;@AgentLanguageCode]'
+
+
+
+

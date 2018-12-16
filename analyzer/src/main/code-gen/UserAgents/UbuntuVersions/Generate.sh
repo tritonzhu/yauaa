@@ -17,7 +17,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TARGETDIR=$(cd "${SCRIPTDIR}/../../../resources/UserAgents"; pwd)
 
 INPUT=UbuntuVersions.csv
-OUTPUT="${TARGETDIR}/UbuntuVersionLookups.yaml"
+OUTPUT="${TARGETDIR}/UbuntuVersion-Lookups.yaml"
 
 if [ "Generate.sh" -ot "${OUTPUT}" ]; then
     if [ "${INPUT}" -ot "${OUTPUT}" ]; then

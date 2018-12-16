@@ -1,0 +1,258 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# https://msdn.microsoft.com/en-us/library/ms537503(v=vs.85).aspx
+
+config:
+
+- lookup:
+    name: 'TridentAgentName'
+    map:
+      "Trident/4.0": "Internet Explorer"
+      "Trident/5.0": "Internet Explorer"
+      "Trident/6.0": "Internet Explorer"
+      "Trident/7.0": "Internet Explorer"
+
+- lookup:
+    name: 'TridentAgentVersion'
+    map:
+      "Trident/4.0": "8.0"
+      "Trident/5.0": "9.0"
+      "Trident/6.0": "10.0"
+      "Trident/7.0": "11.0"
+
+- lookup:
+    name: 'MSIELayoutEngineName'
+    map:
+      "8"   : "Trident"
+      "9"   : "Trident"
+      "10"  : "Trident"
+      "11"  : "Trident"
+
+- lookup:
+    name: 'MSIELayoutEngineVersion'
+    map:
+      "8"   : "4.0"
+      "9"   : "5.0"
+      "10"  : "6.0"
+      "11"  : "7.0"
+
+- matcher:
+    variable:
+    - 'MSIEVersion: agent.product.comments.entry.product.name="MSIEMobile"^.version'
+    extract:
+    - 'LayoutEngineClass                   :   2011 :"Browser"'
+    - 'LayoutEngineName                    :   2011 :"Internet Explorer Mobile"'
+    - 'LayoutEngineVersion                 :   2011 :@MSIEVersion'
+    - 'AgentClass                          :   2003 :"Browser"'
+    - 'AgentName                           :   2003 :"Internet Explorer"'
+    - 'AgentVersion                        :   2003 :@MSIEVersion'
+
+- matcher:
+    variable:
+    - 'MSIEVersion: agent.product.comments.entry.product.name="MSIE"^.version'
+    extract:
+    - 'LayoutEngineClass                   :   2002 :"Browser"'
+    - 'LayoutEngineName                    :   2002 :"Internet Explorer"'
+    - 'LayoutEngineVersion                 :   2002 :@MSIEVersion'
+    - 'AgentClass                          :   2002 :"Browser"'
+    - 'AgentName                           :   2002 :"Internet Explorer"'
+    - 'AgentVersion                        :   2002 :@MSIEVersion'
+
+- matcher:
+    variable:
+    - 'MSIEVersion: agent.product.comments.entry.product.name="MSIE"^.version'
+    extract:
+    - 'LayoutEngineClass                   :   2009 :"Browser"'
+    - 'LayoutEngineName                    :   2009 :LookUp[MSIELayoutEngineName;@MSIEVersion[1]]'
+    - 'LayoutEngineVersion                 :   2009 :LookUp[MSIELayoutEngineVersion;@MSIEVersion[1]]'
+
+    - 'AgentClass                          :   2009 :"Browser"'
+    - 'AgentName                           :   2009 :"Internet Explorer"'
+    - 'AgentVersion                        :   2009 :@MSIEVersion'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   2010 :"Browser"'
+    - 'LayoutEngineName                    :   2010 :"Trident"'
+    - 'LayoutEngineVersion                 :   2010 :agent.product.comments.entry.product.name="Trident"^.version'
+
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :LookUp[TridentAgentName;agent.product.comments.entry.product.name="Trident"^]'
+    - 'AgentVersion                        :   2010 :LookUp[TridentAgentVersion;agent.product.comments.entry.product.name="Trident"^]'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   2009 :"Browser"'
+    - 'LayoutEngineName                    :   2009 :LookUp[MSIELayoutEngineName;agent.product.name="MSIE"^.version[1]]'
+    - 'LayoutEngineVersion                 :   2009 :LookUp[MSIELayoutEngineVersion;agent.product.name="MSIE"^.version[1]]'
+
+    - 'AgentClass                          :   2009 :"Browser"'
+    - 'AgentName                           :   2009 :"Internet Explorer"'
+    - 'AgentVersion                        :   2009 :agent.product.name="MSIE"^.version'
+
+- matcher:
+    extract:
+    - 'LayoutEngineClass                   :   2010 :"Browser"'
+    - 'LayoutEngineName                    :   2010 :"Trident"'
+    - 'LayoutEngineVersion                 :   2010 :agent.product.name="Trident"^.version'
+
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :LookUp[TridentAgentName;agent.product.name="Trident"^]'
+    - 'AgentVersion                        :   2010 :LookUp[TridentAgentVersion;agent.product.name="Trident"^]'
+
+# ===============================================
+
+# MSAppHost means webview
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.name="Trident"'
+    extract:
+    - 'AgentClass                          :  10000 :"Browser Webview"'
+    - 'AgentName                           :  10000 :"Internet Explorer Webview"'
+    - 'AgentVersion                        :   2500 :agent.(1)product.(1)comments.entry.product.name="MSAppHost"^.version'
+    - 'WebviewAppName                      :      0 :"Unknown Webview App"'
+    - 'WebviewAppVersion                   :      0 :"??"'
+
+- matcher:
+    require:
+    - 'agent.product.(1)comments.entry.product.name="Trident"'
+    extract:
+    - 'AgentClass                          :  10000 :"Browser Webview"'
+    - 'AgentName                           :  10000 :"Internet Explorer Webview"'
+    - 'AgentVersion                        :   2500 :agent.product.(1)name="MSAppHost"^.version'
+    - 'WebviewAppName                      :      0 :"Unknown Webview App"'
+    - 'WebviewAppVersion                   :      0 :"??"'
+
+# Internet Explorer CPU Type
+# See: https://msdn.microsoft.com/library/ms537503.aspx
+#   Win64; IA64     System has a 64-bit processor (Intel).
+#   Win64; x64      System has a 64-bit processor (AMD).
+#   WOW64           A 32-bit version of Internet Explorer is running on a 64-bit processor.
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="Win64"'
+    extract:
+    - 'DeviceCpuBits                       :    200 :"64"'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="IA64"'
+    extract:
+    - 'DeviceCpu                           :    200 :"Intel Itanium 64"'
+    - 'DeviceCpuBits                       :    200 :"64"'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="x64"'
+    extract:
+    - 'DeviceCpu                           :    200 :"Intel x86_64"'
+    - 'DeviceCpuBits                       :    200 :"64"'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)text="WOW64"'
+    extract:
+    - 'DeviceCpu                           :    199 :"Intel x86_64"'
+    - 'DeviceCpuBits                       :    199 :"64"'
+
+
+# Internet Explorer Compatibility mode.
+# ------------------------------------------
+# When in Compatibility mode IE will lie about it's real version.
+# If it does then it still shows the correct Trident version of the real version.
+# See: https://msdn.microsoft.com/library/ms537503.aspx#tritoken
+#     When the F12 developer tools are used to change the browser mode of Internet Explorer,
+#     the version token of the user-agent string is modified to appear so that the browser
+#     appears to be an earlier version.
+#     ...
+#     When this happens, a Trident token is added to the user-agent string.
+#     This token includes a version number that enables you to identify the version of the browser, regardless of
+#     the current browser mode.
+# In the table of versions on this page it says:
+# Version token  Description
+# MSIE 10.0      Internet Explorer 10
+# MSIE 9.0       Internet Explorer 9
+# MSIE 8.0       Internet Explorer 8            or IE8 Compatibility View/Browser Mode
+# MSIE 7.0       Windows Internet Explorer 7    or IE7 Compatibility View/Browser Mode
+# MSIE 6.0       Microsoft Internet Explorer 6
+#
+# So only IE 7 and 8 are possible 'compatibility' version.
+# And only IE 9 and up have a compatibility option
+- lookup:
+    name: 'CompatibilityTridentAgentVersion'
+    map:
+      "Trident/5.0": "9.0"
+      "Trident/6.0": "10.0"
+      "Trident/7.0": "11.0"
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)product="MSIE 7.0"'
+    - 'agent.(1)product.(1)comments.(1)entry.(1)text="compatible"'
+    - 'agent.(1)product.(1)comments.entry.(1)product[1-2]="Windows NT"'
+    - 'LookUp[CompatibilityTridentAgentVersion;agent.product.comments.entry.product.name="Trident"^]'
+    extract:
+    - 'IECompatibilityVersion              :      1 :"7.0"'
+    - 'IECompatibilityVersionMajor         :      1 :"7"'
+    - 'IECompatibilityNameVersion          :      1 :"Internet Explorer 7.0"'
+    - 'IECompatibilityNameVersionMajor     :      1 :"Internet Explorer 7"'
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)comments.entry.(1)product="MSIE 8.0"'
+    - 'agent.(1)product.(1)comments.(1)entry.(1)text="compatible"'
+    - 'agent.(1)product.(1)comments.entry.(1)product[1-2]="Windows NT"'
+    - 'LookUp[CompatibilityTridentAgentVersion;agent.product.comments.entry.product.name="Trident"^]'
+    extract:
+    - 'IECompatibilityVersion              :      1 :"8.0"'
+    - 'IECompatibilityVersionMajor         :      1 :"8"'
+    - 'IECompatibilityNameVersion          :      1 :"Internet Explorer 8.0"'
+    - 'IECompatibilityNameVersionMajor     :      1 :"Internet Explorer 8"'
+
+# ===================================================================================
+# Some problem cases with IE where the Trident and other indicators seem off.
+# Reported via https://github.com/nielsbasjes/yauaa/issues/75
+
+- matcher:
+    require:
+    - 'agent.product.comments.entry.product.name="Trident"'
+    extract:
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :"Internet Explorer"'
+    - 'AgentVersion                        :   2012 :agent.product.comments.entry.keyvalue.key="rv"^.value'
+
+- matcher:
+    require:
+    - 'agent.product.comments.entry.product.name="Trident"'
+    - 'agent.product.comments.entry.product.name="MSIE"^.version[1]="10"'
+    extract:
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :"Internet Explorer"'
+    - 'AgentVersion                        :   2013 :agent.product.comments.entry.product.name="MSIE"^.version'
+
+- matcher:
+    require:
+    - 'agent.product.comments.entry.product.name="Trident"'
+    - 'agent.product.comments.entry.product.name="MSIE"^.version[1]="11"'
+    extract:
+    - 'AgentClass                          :   2010 :"Browser"'
+    - 'AgentName                           :   2010 :"Internet Explorer"'
+    - 'AgentVersion                        :   2013 :agent.product.comments.entry.product.name="MSIE"^.version'
+

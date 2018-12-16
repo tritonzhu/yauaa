@@ -278,6 +278,9 @@ public class UserAgentAnalyzerDirect implements Analyzer, Serializable {
                 Resource resource = resourceEntry.getValue();
                 String filename = resource.getFilename();
                 if (filename != null) {
+                    if (!loadTests && !fileCanContainRules(filename)) {
+                        continue;
+                    }
                     maxFilenameLength = Math.max(maxFilenameLength, filename.length());
                     loadResource(yaml, resource.getInputStream(), filename);
                 }
@@ -434,6 +437,33 @@ config:
 ----------------------------
 */
 
+    /*
+     * Filename patterns:
+     *  *-Tests.yaml    --> Tests, no Rules
+     *  *-Rules.yaml    --> no Tests, Rules
+     *  *-Lookups.yaml  --> no Tests, Rules
+     *  *.yaml          --> Tests and Rules
+     */
+    private boolean fileCanContainTests(String filename) {
+        // *-Rules.yaml    --> no Tests, Rules
+        if (filename.endsWith("-Rules.yaml")) {
+            return false;
+        }
+        // *-Lookups.yaml  --> no Tests, Rules
+        // *-Tests.yaml    --> Tests, no Rules
+        // *.yaml          --> Tests and Rules
+        return !filename.endsWith("-Lookups.yaml");
+    }
+
+    private boolean fileCanContainRules(String filename) {
+        // *-Tests.yaml    --> Tests, no Rules
+        // *-Rules.yaml    --> no Tests, Rules
+        // *-Lookups.yaml  --> no Tests, Rules
+        // *.yaml          --> Tests and Rules
+        return !filename.endsWith("-Tests.yaml");
+    }
+
+
     private void loadResource(Yaml yaml, InputStream yamlStream, String filename) {
         Node loadedYaml;
         try {
@@ -470,6 +500,9 @@ config:
         SequenceNode configNode = getValueAsSequenceNode(configNodeTuple, filename);
         List<Node> configList = configNode.getValue();
 
+        boolean failOnTestsInFile = !fileCanContainTests(filename);
+        boolean failOnRulesInFile = !fileCanContainRules(filename);
+
         for (Node configEntry : configList) {
             requireNodeInstanceOf(MappingNode.class, configEntry, filename, "The entry MUST be a mapping");
             NodeTuple entry = getExactlyOneNodeTuple((MappingNode) configEntry, filename);
@@ -477,15 +510,19 @@ config:
             String entryType = getKeyAsString(entry, filename);
             switch (entryType) {
                 case "lookup":
+                    failRules(failOnRulesInFile, filename, actualEntry, entryType);
                     loadYamlLookup(actualEntry, filename);
                     break;
                 case "set":
+                    failRules(failOnRulesInFile, filename, actualEntry, entryType);
                     loadYamlLookupSets(actualEntry, filename);
                     break;
                 case "matcher":
+                    failRules(failOnRulesInFile, filename, actualEntry, entryType);
                     loadYamlMatcher(actualEntry, filename);
                     break;
                 case "test":
+                    failTests(failOnTestsInFile, filename, actualEntry, entryType);
                     if (loadTests) {
                         loadYamlTestcase(actualEntry, filename);
                     }
@@ -495,6 +532,22 @@ config:
                         "Yaml config.(" + filename + ":" + actualEntry.getStartMark().getLine() + "): " +
                             "Found unexpected config entry: " + entryType + ", allowed are 'lookup', 'set', 'matcher' and 'test'");
             }
+        }
+    }
+
+    private void failRules(boolean check, String filename, MappingNode entry, String entryType) {
+        if (check) {
+            throw new InvalidParserConfigurationException(
+                "Yaml config.(" + filename + ":" + entry.getStartMark().getLine() + "): " +
+                    "Found unexpected config entry: " + entryType + ", this file may NOT contain any rules.");
+        }
+    }
+
+    private void failTests(boolean check, String filename, MappingNode entry, String entryType) {
+        if (check) {
+            throw new InvalidParserConfigurationException(
+                "Yaml config.(" + filename + ":" + entry.getStartMark().getLine() + "): " +
+                    "Found unexpected config entry: " + entryType + ", this file may NOT contain any tests.");
         }
     }
 

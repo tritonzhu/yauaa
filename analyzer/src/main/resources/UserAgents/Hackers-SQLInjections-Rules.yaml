@@ -1,0 +1,141 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+setSQLInjection: &setSQLInjection
+    - '__Set_ALL_Fields__                  :   9999 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+    - 'DeviceClass                         :  10000 :"Hacker"'
+    - 'DeviceName                          :  10000 :"Hacker"'
+    - 'DeviceBrand                         :  10000 :"Hacker"'
+    - 'DeviceCpu                           :  10000 :"Hacker"'
+    - 'DeviceVersion                       :  10000 :"Hacker"'
+    - 'OperatingSystemClass                :  10000 :"Hacker"'
+    - 'OperatingSystemName                 :  10000 :"Hacker"'
+    - 'OperatingSystemVersion              :  10000 :"Hacker"'
+    - 'OperatingSystemNameVersion          :  10000 :"Hacker"'
+    - 'LayoutEngineClass                   :  10000 :"Hacker"'
+    - 'LayoutEngineName                    :  10000 :"Hacker"'
+    - 'LayoutEngineVersion                 :  10000 :"Hacker"'
+    - 'LayoutEngineVersionMajor            :  10000 :"Hacker"'
+    - 'LayoutEngineNameVersion             :  10000 :"Hacker"'
+    - 'LayoutEngineNameVersionMajor        :  10000 :"Hacker"'
+    - 'LayoutEngineBuild                   :  10000 :"Hacker"'
+    - 'AgentClass                          :  10000 :"Hacker"'
+    - 'AgentName                           :  10000 :"Hacker"'
+    - 'AgentVersion                        :  10000 :"Hacker"'
+    - 'AgentVersionMajor                   :  10000 :"Hacker"'
+    - 'AgentNameVersion                    :  10000 :"Hacker"'
+    - 'AgentNameVersionMajor               :  10000 :"Hacker"'
+    - 'AgentLanguage                       :  10000 :"Hacker"'
+    - 'AgentLanguageCode                   :  10000 :"Hacker"'
+    - 'AgentSecurity                       :  10000 :"Hacker"'
+    - 'HackerAttackVector                  :  10000 :"SQL Injection"'
+    - 'HackerToolkit                       :  10000 :"Unknown"'
+
+config:
+
+# Sqlmap hacker
+
+- matcher:
+    require:
+    - 'agent.(1)product.(1)name="sqlmap"'
+    extract:
+    - 'DeviceClass                         :  10010 :"Hacker"'
+    - 'DeviceName                          :  10010 :"Hacker"'
+    - 'DeviceBrand                         :  10010 :"Hacker"'
+    - 'DeviceVersion                       :  10010 :"Hacker"'
+    - 'OperatingSystemClass                :  10010 :"Hacker"'
+    - 'OperatingSystemName                 :  10010 :"Hacker"'
+    - 'OperatingSystemVersion              :  10010 :"Hacker"'
+    - 'OperatingSystemNameVersion          :  10010 :"Hacker"'
+    - 'LayoutEngineClass                   :  10010 :"Hacker"'
+    - 'LayoutEngineName                    :  10010 :"Hacker"'
+    - 'LayoutEngineVersion                 :  10010 :"Hacker"'
+    - 'LayoutEngineVersionMajor            :  10010 :"Hacker"'
+    - 'AgentClass                          :  10010 :"Hacker"'
+    - 'AgentName                           :  10010 :"Hacker"'
+    - 'AgentVersion                        :  10010 :"Hacker"'
+    - 'AgentVersionMajor                   :  10010 :"Hacker"'
+    - 'HackerAttackVector                  :  10010 :"SQL Injection"'
+    - 'HackerToolkit                       :  10010 :"Sqlmap"'
+    - 'AgentNameVersion                    :  10010 :"Hacker"'
+    - 'AgentNameVersionMajor               :  10010 :"Hacker"'
+
+- matcher:
+    require:
+    - 'agent~"SELECT "'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"SELECT("'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"CASE WHEN"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"UNION ALL"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~" OR NOT"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~" OR "'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent{"OR "'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"WAITFOR "'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"ORDER BY"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"FROM DUAL"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"DECLARE "'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"VARCHAR"'
+    extract: *setSQLInjection
+
+- matcher:
+    require:
+    - 'agent~"1=1"'
+    extract: *setSQLInjection
+

@@ -18,7 +18,7 @@ TARGETDIR=$(cd "${SCRIPTDIR}/../../../resources/UserAgents"; pwd)
 
 INPUT1=ISOLanguageCodes.csv
 INPUT2=iso-639-3.tab
-OUTPUT="${TARGETDIR}/ISOLanguageCode.yaml"
+OUTPUT="${TARGETDIR}/ISOLanguageCode-Rules.yaml"
 
 if [ "Generate.sh" -ot "${OUTPUT}" ]; then
     if [ "${INPUT1}" -ot "${OUTPUT}" ] && [ "${INPUT2}" -ot "${OUTPUT}" ] ; then

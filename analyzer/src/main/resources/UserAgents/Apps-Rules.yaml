@@ -1,0 +1,170 @@
+#
+# Yet Another UserAgent Analyzer
+# Copyright (C) 2013-2018 Niels Basjes
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+config:
+# Testcases for apps
+
+# https://user-agents.me/cfnetwork-version-list
+# If you create an iOS app and retrieve data from a webserver,
+# the app will create an default user agent as "AppName/version CFNetwork/version Darwin/version".
+
+- matcher:
+    require:
+    - 'agent.(2)product.(1)name="CFNetwork"'
+    extract:
+    - 'DeviceClass                         :     10 :"Mobile"'
+    - 'DeviceBrand                         :     10 :"Apple"'
+    - 'DeviceName                          :     10 :"iOS Device"'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Darwin (iOS)"'
+    - 'OperatingSystemVersion              :     10 :agent.(3)product.(1)name="Darwin"^.version'
+    - 'LayoutEngineClass                   :     10 :"Mobile App"'
+    - 'LayoutEngineName                    :     10 :agent.(1)product.(1)name'
+    - 'LayoutEngineVersion                 :     10 :agent.(1)product.(1)version'
+    - 'AgentClass                          :     10 :"Mobile App"'
+    - 'AgentName                           :     10 :agent.(1)product.(1)name'
+    - 'AgentVersion                        :     10 :agent.(1)product.(1)version'
+
+- matcher:
+    require:
+    - 'agent.(2)product.(1)name="CFNetwork"'
+    - 'agent.(1)product.(1)comments.(1)entry="unknown version"'
+    extract:
+    - 'DeviceClass                         :     10 :"Mobile"'
+    - 'DeviceBrand                         :     10 :"Apple"'
+    - 'DeviceName                          :     10 :"iOS Device"'
+    - 'OperatingSystemClass                :     10 :"Mobile"'
+    - 'OperatingSystemName                 :     10 :"Darwin (iOS)"'
+    - 'OperatingSystemVersion              :     10 :agent.(3)product.(1)name="Darwin"^.version'
+    - 'LayoutEngineClass                   :     10 :"Mobile App"'
+    - 'LayoutEngineName                    :     10 :agent.(1)product.(1)name'
+    - 'LayoutEngineVersion                 :      6 :"??"'
+    - 'AgentClass                          :     10 :"Mobile App"'
+    - 'AgentName                           :     10 :agent.(1)product.(1)name'
+    - 'AgentVersion                        :      6 :"??"'
+
+# Snapchat on Android
+
+# Snapchat on IPhone
+
+#Instagram on Android 7.1.1
+#Instagram on iPhone
+- matcher:
+    extract:
+    - 'AgentClass                          :     50 :"Special"'
+    - 'AgentName                           :     50 :"iTunes"'
+    - 'AgentVersion                        :     50 :agent.(1)product.(1)name="iTunes"^.version'
+
+
+# NOTE: iTunes makes a complete mess of the Windows desktop OS names
+
+
+    expected:
+      DeviceClass                          : 'Desktop'
+      DeviceName                           : 'Desktop'
+      DeviceBrand                          : 'Unknown'
+      DeviceCpu                            : 'Intel x86_64'
+      DeviceCpuBits                        : '64'
+      OperatingSystemClass                 : 'Desktop'
+      OperatingSystemName                  : 'Windows NT'
+      OperatingSystemVersion               : '8.1'
+      OperatingSystemNameVersion           : 'Windows 8.1'
+      LayoutEngineClass                    : 'Browser'
+      LayoutEngineName                     : 'AppleWebKit'
+      LayoutEngineVersion                  : '7604.1038.1006.6'
+      LayoutEngineVersionMajor             : '7604'
+      LayoutEngineNameVersion              : 'AppleWebKit 7604.1038.1006.6'
+      LayoutEngineNameVersionMajor         : 'AppleWebKit 7604'
+      AgentClass                           : 'Special'
+      AgentName                            : 'iTunes'
+      AgentVersion                         : '12.7'
+      AgentVersionMajor                    : '12'
+      AgentNameVersion                     : 'iTunes 12.7'
+      AgentNameVersionMajor                : 'iTunes 12'
+
+- lookup:
+    name: 'AliAppNames'
+    map:
+      "AP"        : "AlipayClient"
+      "TUnionSDK" : "AliApp"
+
+- matcher:
+    variable:
+    - 'AliApp:agent.product.name[1]="AliApp"^.comments.(1)entry.(1)product'
+    require:
+    - 'IsNull[LookUp[AliAppNames;@AliApp.name]]'
+    extract:
+    - 'AgentClass                          :   2018 :"Browser Webview"'
+    - 'WebviewAppName                      :   2018 :Concat["Alibaba ";NormalizeBrand[@AliApp.name]]'
+    - 'WebviewAppVersion                   :   2018 :@AliApp.version'
+
+- matcher:
+    variable:
+    - 'AliApp:agent.product.name[2]="AliApp"^.comments.(1)entry.(1)product'
+    require:
+    - 'IsNull[LookUp[AliAppNames;@AliApp.name]]'
+    extract:
+    - 'AgentClass                          :   2018 :"Browser Webview"'
+    - 'WebviewAppName                      :   2018 :Concat["Alibaba ";NormalizeBrand[@AliApp.name]]'
+    - 'WebviewAppVersion                   :   2018 :@AliApp.version'
+
+- matcher:
+    variable:
+    - 'AliApp:agent.product.name[1]="AliApp"^.comments.(1)entry.(1)product'
+    - 'AliAppName:LookUp[AliAppNames;@AliApp.name]'
+    extract:
+    - 'AgentClass                          :   2019 :"Browser Webview"'
+    - 'WebviewAppName                      :   2019 :Concat["Alibaba ";@AliAppName]'
+    - 'WebviewAppVersion                   :   2019 :@AliApp.version'
+
+- matcher:
+    variable:
+    - 'AliApp:agent.product.name[2]="AliApp"^.comments.(1)entry.(1)product'
+    - 'AliAppName:LookUp[AliAppNames;@AliApp.name]'
+    extract:
+    - 'AgentClass                          :   2019 :"Browser Webview"'
+    - 'WebviewAppName                      :   2019 :Concat["Alibaba ";@AliAppName]'
+    - 'WebviewAppVersion                   :   2019 :@AliApp.version'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
