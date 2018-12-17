@@ -20,13 +20,16 @@ package nl.basjes.parse.useragent.profile;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import nl.basjes.parse.useragent.debug.UserAgentAnalyzerTester;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestPerformance {
     private static final Logger LOG = LoggerFactory.getLogger(TestPerformance.class);
 
@@ -78,5 +81,25 @@ public class TestPerformance {
         long preheatMsecs = (stop - start) / 1000000;
         LOG.info("-- Preheat : {}ms", preheatMsecs);
     }
+
+    @Test
+    public void startupTimeWithTests() {
+        UserAgentAnalyzerTester uaa =
+            UserAgentAnalyzerTester.newBuilder()
+                .hideMatcherLoadStats()
+                .delayInitialization()
+                .build();
+    }
+
+    @Test
+    public void startupTimeWithoutTests() {
+        UserAgentAnalyzerTester uaa =
+            UserAgentAnalyzerTester.newBuilder()
+                .hideMatcherLoadStats()
+                .delayInitialization()
+                .dropTests()
+                .build();
+    }
+
 
 }
