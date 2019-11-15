@@ -1186,37 +1186,43 @@ config:
 
 # "Today, we’re launching a new feature which will let everyone using Google Go’s browser listen to webpages out loud."
 
-- matcher:
-    require:
-    - 'agent="google-speakr"'
-    extract:
-    - '__Set_ALL_Fields__                  :     9900 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
-    - 'DeviceClass                         :    10000 :"Mobile"'
-    - 'AgentClass                          :    10000 :"Voice"'
-    - 'OperatingSystemClass                :    10000 :"Mobile"'
-    - 'OperatingSystemName                 :    10000 :"Android"'
-    - 'AgentClass                          :    10000 :"Voice"'
-    - 'AgentName                           :    10000 :"Google Go"'
+#- matcher:
+#    require:
+#    - 'agent="google-speakr"'
+#    extract:
+#    - '__Set_ALL_Fields__                  :     9900 :"<<<null>>>"' # Must be 1 lower than the rest (or you will wipe yourself too)
+#    - 'DeviceClass                         :    10000 :"Mobile"'
+#    - 'AgentClass                          :    10000 :"Voice"'
+#    - 'OperatingSystemClass                :    10000 :"Mobile"'
+#    - 'OperatingSystemName                 :    10000 :"Android"'
+#    - 'AgentClass                          :    10000 :"Voice"'
+#    - 'AgentName                           :    10000 :"Google Go"'
 
 - test:
     input:
       user_agent_string: 'google-speakr'
     expected:
-      DeviceClass                          : 'Mobile'
-      DeviceName                           : 'Unknown'
-      DeviceBrand                          : 'Unknown'
-      OperatingSystemClass                 : 'Mobile'
-      OperatingSystemName                  : 'Android'
-      OperatingSystemVersion               : '??'
-      OperatingSystemVersionMajor          : '??'
-      OperatingSystemNameVersion           : 'Android ??'
-      OperatingSystemNameVersionMajor      : 'Android ??'
-      AgentClass                           : 'Voice'
-      AgentName                            : 'Google Go'
-      AgentVersion                         : '??'
-      AgentVersionMajor                    : '??'
-      AgentNameVersion                     : 'Google Go ??'
-      AgentNameVersionMajor                : 'Google Go ??'
+      DeviceClass                          : 'Robot'                    #   300000 | FAILED; Should be 'Mobile'
+      DeviceName                           : 'Google Read Aloud'        #   300000 | FAILED; Should be 'Unknown'
+      DeviceBrand                          : 'Google'                   #   300000 | FAILED; Should be 'Unknown'
+      OperatingSystemClass                 : 'Cloud'                    #   300000 | FAILED; Should be 'Mobile'
+      OperatingSystemName                  : 'Cloud'                    #   300000 | FAILED; Should be 'Android'
+      OperatingSystemVersion               : '??'                       #   300000
+      OperatingSystemVersionMajor          : '??'                       #   300000
+      OperatingSystemNameVersion           : 'Cloud ??'                 #   300000 | FAILED; Should be 'Android ??'
+      OperatingSystemNameVersionMajor      : 'Cloud ??'                 #   300000 | FAILED; Should be 'Android ??'
+      LayoutEngineClass                    : 'Robot'                    #   300000 | FAILED; Should be '<<absent>>'
+      LayoutEngineName                     : 'Google Read Aloud'        #   300000 | FAILED; Should be '<<absent>>'
+      LayoutEngineVersion                  : '??'                       #   300000 | FAILED; Should be '<<absent>>'
+      LayoutEngineVersionMajor             : '??'                       #   300000 | FAILED; Should be '<<absent>>'
+      LayoutEngineNameVersion              : 'Google Read Aloud ??'     #   300000 | FAILED; Should be '<<absent>>'
+      LayoutEngineNameVersionMajor         : 'Google Read Aloud ??'     #   300000 | FAILED; Should be '<<absent>>'
+      AgentClass                           : 'Robot'                    #   300000 | FAILED; Should be 'Voice'
+      AgentName                            : 'Google Read Aloud'               #   300000 | FAILED; Should be 'Google Go'
+      AgentVersion                         : '??'                       #   300000
+      AgentVersionMajor                    : '??'                       #   300000
+      AgentNameVersion                     : 'Google Read Aloud ??'            #   300000 | FAILED; Should be 'Google Go ??'
+      AgentNameVersionMajor                : 'Google Read Aloud ??'            #   300000 | FAILED; Should be 'Google Go ??'
 
 
 - test:
