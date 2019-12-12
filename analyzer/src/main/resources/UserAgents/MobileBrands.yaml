@@ -42,6 +42,7 @@ config:
       "Lenovo"                  : "Lenovo"
       "LG"                      : "LG"
       "Lyf"                     : "Lyf"
+      "Honor"                   : "Huawei"
 
       # Special case; Microsoft is Hardware and Software --> This "hardware brand" also matches "software"
 #      "Microsoft"               : "Microsoft"
